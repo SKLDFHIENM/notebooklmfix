@@ -13,7 +13,12 @@
 
 ## ✨ Core Features
 
+> **🔥 New in v1.1**
+> - **Enhanced Text Repair**: Significantly improved recognition and restoration rate for Chinese characters (especially blurry fonts).
+> - **Context Awareness**: Introduced context-based guessing to intelligently correct "look-alike" character errors.
+
 - **🖼️ Intelligent HD Restoration**: Uses the `gemini-3-pro-image-preview` model to intelligently recognize and redraw document content, rather than just applying a filter.
+
 - **🔍 Pixel-level Repair**: Offers **2K (Standard)** and **4K (Extreme)** resolution options to meet different needs.
 - **📝 Precise Text Restoration**: Fixes jagged edges and blurry text while maintaining the original layout (*Note: Improves quality only, does not alter content*).
 - **📊 Multi-format Export**:
