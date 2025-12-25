@@ -38,67 +38,32 @@
 - **PDF Core**: [PDF.js](https://mozilla.github.io/pdf.js/) (Rendering) & [jsPDF](https://github.com/parallax/jsPDF) (Export)
 - **Presentation**: [PptxGenJS](https://gitbrent.github.io/PptxGenJS/)
 
-## 🚀 快速开始
-
-### 前置要求
-
-1.  **Node.js**: 建议版本 v20+。
-2.  **Google Cloud API Key**: 需要开通 Gemini API 访问权限，并确保可以使用 `gemini-3-pro-image-preview` 模型。
-
-### 安装步骤
-
-1.  **克隆仓库**
-    ```bash
-    git clone https://github.com/your-username/notebooklm-fixer.git
-    cd notebooklm-fixer
-    ```
-
-2.  **安装依赖**
-    ```bash
-    npm install
-    # 或者
-    pnpm install
-    ```
-
-### 配置 API Key
-
-本项目提供灵活的 API Key 配置方式，满足不同场景需求：
-
-#### 方案 A：本地 UI 配置 (推荐用于非开发人员)
-1. 启动项目后，如果检测到未配置 Key，界面右上角会显示橙色的 "选择 API Key" 按钮。
-2. 点击按钮，在弹出的窗口中输入您的 **Gemini API Key**。
-    - **隐私承诺**：Key 仅加密存储在您浏览器的 `LocalStorage` 中，绝不上传至任何服务器。
-3. 点击 "保存并连接"，即可开始使用。
-
-#### 方案 B：环境变量 (推荐用于开发/部署)
-在项目根目录创建 `.env.local` 文件，并添加：
+## 🚀 立即使用 (Online Usage)
+ 
+无需安装，点击下方链接即可直接使用：
+ 
+**👉 [点击打开: notebooklmfix.vercel.app](https://notebooklmfix.vercel.app/)**
+ 
+### 🔑 配置 API Key
+首次打开时，点击右上角的 **"选择 API Key"** 按钮，输入您的 Gemini API Key 即可。
+> **隐私承诺**：您的 Key 仅保存在您自己的浏览器本地 (LocalStorage)，绝不会上传至任何服务器。
+ 
+---
+ 
+## 🛠️ 本地开发 (Developers Only)
+如果您是开发者，希望在本地运行或修改代码：
+ 
+### 1. 克隆与安装
 ```bash
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-项目启动时会自动读取此变量，无需手动配置。
-
-#### 方案 C：Google AI Studio / IDX 集成
-如果您在 [Google Project IDX](https://idx.dev/) 环境中打开本项目，应用会自动尝试通过 `window.aistudio` 接口无感获取授权，无需任何配置。
-
-### 运行开发服务器
-
-```bash
+git clone https://github.com/JaffryGao/notebooklm-fixer.git
+cd notebooklm-fixer
+npm install
 npm run dev
 ```
+ 
+### 2. 或者一键部署您自己的版本
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJaffryGao%2Fnotebooklm-fixer)
 
-打开浏览器访问 `http://localhost:5173` 即可使用。
-
-
-### 部署 (Deployment)
-
-如果不希望在本地运行，您可以将其一键部署到 Vercel：
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fnotebooklm-fixer)
-
-1. 点击上方的 **Deploy** 按钮。
-2. 按照 Vercel 的指引导入项目。
-3. 部署完成后，您将获得一个类似 `https://notebooklm-fixer.vercel.app` 的网址。
-4. 打开该网址，在设置中填入您的 API Key 即可使用（Key 仅存储在您的浏览器本地，安全无忧）。
 
 ## 📖 使用指南
 

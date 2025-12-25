@@ -36,67 +36,32 @@ Built with modern Web technologies:
 - **PDF Core**: [PDF.js](https://mozilla.github.io/pdf.js/) (Rendering) & [jsPDF](https://github.com/parallax/jsPDF) (Export)
 - **Presentation**: [PptxGenJS](https://gitbrent.github.io/PptxGenJS/)
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-1.  **Node.js**: Recommended version v20+.
-2.  **Google Cloud API Key**: Requires access to Gemini API and the `gemini-3-pro-image-preview` model.
-
-### Installation
-
-1.  **Clone the Repository**
-    ```bash
-    git clone https://github.com/your-username/notebooklm-fixer.git
-    cd notebooklm-fixer
-    ```
-
-2.  **Install Dependencies**
-    ```bash
-    npm install
-    # Or
-    pnpm install
-    ```
-
-### Configure API Key
-
-This project offers flexible API Key configuration to suit different scenarios:
-
-#### Option A: Local UI Configuration (Recommended for Non-developers)
-1. After starting the project, if no Key is detected, an orange "Select API Key" button will appear in the top right corner.
-2. Click the button and enter your **Gemini API Key** in the pop-up window.
-    - **Privacy Promise**: The Key is stored encrypted in your browser's `LocalStorage` only and is never uploaded to any server.
-3. Click "Save & Connect" to start using.
-
-#### Option B: Environment Variable (Recommended for Dev/Deployment)
-Create a `.env.local` file in the project root and add:
+## 🚀 Try It Now
+ 
+No installation required, simply click the link below to get started:
+ 
+**👉 [Open App: notebooklmfix.vercel.app](https://notebooklmfix.vercel.app/)**
+ 
+### 🔑 Configure API Key
+On your first visit, click the **"Select API Key"** button in the top right corner and enter your Gemini API Key.
+> **Privacy Promise**: Your Key is stored locally in your browser (LocalStorage) and is never uploaded to any server.
+ 
+---
+ 
+## 🛠️ For Developers
+If you are a developer and want to run or modify the code locally:
+ 
+### 1. Clone & Install
 ```bash
-GEMINI_API_KEY=your_gemini_api_key_here
-```
-The project will automatically read this variable upon startup; no manual configuration required.
-
-#### Option C: Google AI Studio / IDX Integration
-If you open this project in [Google Project IDX](https://idx.dev/), the app will automatically try to acquire authorization via the `window.aistudio` interface seamlessly, requiring no configuration.
-
-### Run Development Server
-
-```bash
+git clone https://github.com/JaffryGao/notebooklm-fixer.git
+cd notebooklm-fixer
+npm install
 npm run dev
 ```
+ 
+### 2. Or Deploy Your Own Instance
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FJaffryGao%2Fnotebooklm-fixer)
 
-Open your browser and visit `http://localhost:5173` to use.
-
-
-### Deployment
-
-If you prefer not to run it locally, you can deploy it to Vercel with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fnotebooklm-fixer)
-
-1.  Click the **Deploy** button above.
-2.  Follow Vercel's instructions to import the project.
-3.  Once deployed, you will get a URL like `https://notebooklm-fixer.vercel.app`.
-4.  Open the URL and enter your API Key in the settings to start using (Key is stored locally in your browser, safe and secure).
 
 ## 📖 Usage Guide
 
