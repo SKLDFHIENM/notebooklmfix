@@ -2,7 +2,9 @@
 
 # NotebookLM Fixer (修复专家)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fnotebooklm-fixer)
+
 
 
 **NotebookLM Fixer** 是一款专为修复 [NotebookLM](https://notebooklm.google.com/) 生成的 PDF 文档而设计的智能工具。它利用 Google 最新的 **Gemini 3.0 Pro** 多模态模型，解决文档中常见的文字模糊、伪影和分辨率过低问题，实现像素级的画质重塑，并支持导出为高清晰度的 PDF 或 PPTX 演示文稿。
@@ -86,7 +88,18 @@ npm run dev
 
 打开浏览器访问 `http://localhost:5173` 即可使用。
 
+
+### 部署 (Deployment)
+
+如果不希望在本地运行，您可以将其一键部署到 Vercel：
+
+1. 点击上方的 **Deploy with Vercel** 按钮。
+2. 按照 Vercel 的指引导入项目。
+3. 部署完成后，您将获得一个类似 `https://notebooklm-fixer.vercel.app` 的网址。
+4. 打开该网址，在设置中填入您的 API Key 即可使用（Key 仅存储在您的浏览器本地，安全无忧）。
+
 ## 📖 使用指南
+
 
 1.  **上传**: 将 NotebookLM 生成的 PDF 文件拖入上传区域。
 2.  **预览**: 应用会自动提取 PDF 页面。
