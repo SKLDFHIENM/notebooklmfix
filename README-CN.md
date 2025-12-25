@@ -3,7 +3,7 @@
 # NotebookLM Fixer (修复专家)
 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fnotebooklm-fixer)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
 
@@ -93,7 +93,9 @@ npm run dev
 
 如果不希望在本地运行，您可以将其一键部署到 Vercel：
 
-1. 点击上方的 **Deploy with Vercel** 按钮。
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Fnotebooklm-fixer)
+
+1. 点击上方的 **Deploy** 按钮。
 2. 按照 Vercel 的指引导入项目。
 3. 部署完成后，您将获得一个类似 `https://notebooklm-fixer.vercel.app` 的网址。
 4. 打开该网址，在设置中填入您的 API Key 即可使用（Key 仅存储在您的浏览器本地，安全无忧）。
