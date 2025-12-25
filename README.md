@@ -10,6 +10,13 @@
 ![App Screenshot](./assets/png1.png)
 ![App Screenshot](./assets/png2.png)
 
+### 📊 Restoration Comparison
+
+| 🔴 Before | 🟢 After |
+| :---: | :---: |
+| ![Before](./assets/png4.png) | ![After](./assets/png5.png) |
+
+
 
 ## ✨ Core Features
 

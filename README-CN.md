@@ -12,6 +12,13 @@
 ![App Screenshot](./assets/png1.png)
 ![App Screenshot](./assets/png2.png)
 
+### 📊 修复效果对比 (Before & After)
+
+| 🔴 修复前 (Original) | 🟢 修复后 (Restored) |
+| :---: | :---: |
+| ![Before](./assets/png4.png) | ![After](./assets/png5.png) |
+
+
 
 ## ✨ 核心特性
 
