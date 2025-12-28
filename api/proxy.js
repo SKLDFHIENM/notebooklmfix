@@ -2,48 +2,44 @@ import { GoogleGenAI } from "@google/genai";
 import { kv } from '@vercel/kv';
 
 export const config = {
-    runtime: 'edge',
+    // runtime: 'edge', // Disable Edge to allow larger body size and longer timeout
+    maxDuration: 60,
+    api: {
+        bodyParser: {
+            sizeLimit: '10mb',
+        },
+    },
 };
 
-
-
-export default async function handler(req) {
+export default async function handler(req, res) {
     if (req.method !== 'POST') {
-        return new Response('Method Not Allowed', { status: 405 });
+        return res.status(405).send('Method Not Allowed');
     }
 
     try {
-        const { image, prompt, accessCode, imageSize, aspectRatio } = await req.json();
+        // Node.js runtime automatically parses JSON body into req.body
+        const { image, prompt, accessCode, imageSize, aspectRatio } = req.body;
 
         // 1. Validate Access Code & Quota via Vercel KV (Hash)
         const key = `ac:${accessCode}`;
         const quotaData = await kv.hgetall(key);
 
         if (!quotaData) {
-            return new Response(JSON.stringify({ error: "无效的激活码 (Invalid Access Code)" }), {
-                status: 401,
-                headers: { 'Content-Type': 'application/json' }
-            });
+            return res.status(401).json({ error: "无效的激活码 (Invalid Access Code)" });
         }
 
         const remaining = parseInt(quotaData.remaining);
         if (remaining <= 0) {
-            return new Response(JSON.stringify({
+            return res.status(403).json({
                 error: "配额已用尽 (Quota Exceeded)",
                 quota: { ...quotaData, remaining }
-            }), {
-                status: 403,
-                headers: { 'Content-Type': 'application/json' }
             });
         }
 
         // 2. Validate API Key (Server-side)
         const SERVER_KEY = process.env.GEMINI_API_KEY;
         if (!SERVER_KEY) {
-            return new Response(JSON.stringify({ error: "Server Error: GEMINI_API_KEY Config Missing" }), {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            });
+            return res.status(500).json({ error: "Server Error: GEMINI_API_KEY Config Missing" });
         }
 
         // 3. Call Google Gemini
@@ -72,13 +68,7 @@ export default async function handler(req) {
         });
 
         // 4. Deduct Quota (Atomic HINCRBY)
-        // Returns the new value after decrement
         const newRemaining = await kv.hincrby(key, 'remaining', -1);
-
-        // Safety check: if it went below 0 (race condition), treat as 0 or refund?
-        // For "User Friendly" loose limit policy, we just accept it.
-        // If we strictly don't want negatives:
-        // if (newRemaining < 0) await kv.hset(key, { remaining: 0 }); 
 
         const newQuota = {
             total: parseInt(quotaData.total),
@@ -88,24 +78,18 @@ export default async function handler(req) {
         // 5. Return result with new quota info
         const candidates = response.candidates;
         if (!candidates || !candidates[0] || !candidates[0].content) {
-            // Restore quota if generation failed (User Friendly: No deduct on failure)
+            // Restore quota if generation failed
             await kv.hincrby(key, 'remaining', 1);
             throw new Error("No candidates returned");
         }
 
-        return new Response(JSON.stringify({
+        return res.status(200).json({
             candidates,
-            quota: newQuota // Return updated quota to frontend
-        }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
+            quota: newQuota
         });
 
     } catch (error) {
         console.error("Proxy Error:", error);
-        return new Response(JSON.stringify({ error: error.message }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return res.status(500).json({ error: error.message || "Internal Server Error" });
     }
 }
