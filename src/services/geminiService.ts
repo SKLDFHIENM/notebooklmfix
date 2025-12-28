@@ -59,50 +59,65 @@ export const processImageWithGemini = async (
   let cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, "");
 
   if (accessCode) {
-    // PROXY MODE - STRICT COMPRESSION FOR VERCEL LIMIT (4.5MB)
-    // Target: Keep payload under 4MB to be safe
-    const LIMIT_MB = 4;
-    const currentSizeMB = (cleanBase64.length * 0.75) / (1024 * 1024);
+    // PROXY MODE - MANDATORY COMPRESSION FOR VERCEL (Hard Limit 4.5MB)
+    // We strictly resize ALL images to max 1280px to ensure payload is tiny (<1MB).
+    // This is necessary because Vercel Free Tier rejects anything > 4.5MB immediately.
+    // NOTE: This does NOT affect the output quality, only the reference image sent to AI.
+    try {
+      console.log("Proxy Mode: Force compressing image to safe limit (Max 1280px)...");
 
-    if (currentSizeMB > LIMIT_MB) {
-      try {
-        console.log(`Image too large (${currentSizeMB.toFixed(2)}MB) for Vercel Free Limit (4.5MB), compressing...`);
+      const compressImage = (base64: string): Promise<string> => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
 
-        const compressImage = (base64: string): Promise<string> => {
-          return new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => {
-              const canvas = document.createElement('canvas');
+            // Force Resize to Max 1280px (Safe & Fast)
+            const MAX_DIM = 1280;
+            let width = img.width;
+            let height = img.height;
 
-              // Aggressive strategy: 
-              // If huge (>8MB), scale 0.5; if large (>4MB), scale 0.7
-              let scale = 0.7;
-              if (currentSizeMB > 8) scale = 0.5;
-
-              canvas.width = img.width * scale;
-              canvas.height = img.height * scale;
-
-              const ctx = canvas.getContext('2d');
-              if (ctx) {
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                // Use JPEG with lower quality (0.6) to ensure small size
-                resolve(canvas.toDataURL('image/jpeg', 0.6).replace(/^data:image\/jpeg;base64,/, ""));
+            // Resize logic: Maintain aspect ratio
+            if (width > MAX_DIM || height > MAX_DIM) {
+              if (width > height) {
+                height = Math.round((height * MAX_DIM) / width);
+                width = MAX_DIM;
               } else {
-                resolve(base64);
+                width = Math.round((width * MAX_DIM) / height);
+                height = MAX_DIM;
               }
-            };
-            img.onerror = () => resolve(base64);
-            img.src = `data:image/png;base64,${base64}`;
-          });
-        };
+            }
 
-        cleanBase64 = await compressImage(cleanBase64);
-        const newSize = (cleanBase64.length * 0.75) / (1024 * 1024);
-        console.log(`Compressed size: ${newSize.toFixed(2)}MB`);
+            canvas.width = width;
+            canvas.height = height;
 
-      } catch (e) {
-        console.warn("Compression failed, sending original", e);
-      }
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              // High quality downscaling
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+              ctx.drawImage(img, 0, 0, width, height);
+              // JPEG 0.7 is perfect for AI reference (small size, good details)
+              resolve(canvas.toDataURL('image/jpeg', 0.7).replace(/^data:image\/jpeg;base64,/, ""));
+            } else {
+              // Canvas context failed? Return original (Should not happen)
+              resolve(base64);
+            }
+          };
+          img.onerror = (e) => {
+            console.warn("Image load failed during compression, using original", e);
+            resolve(base64);
+          };
+          img.src = `data:image/png;base64,${base64}`;
+        });
+      };
+
+      cleanBase64 = await compressImage(cleanBase64);
+      const newSize = (cleanBase64.length * 0.75) / (1024 * 1024);
+      console.log(`Payload ready: ${newSize.toFixed(2)}MB`);
+
+    } catch (e) {
+      console.warn("Compression routine failed, sending original", e);
     }
 
     try {
