@@ -131,7 +131,7 @@ export const processImageWithGemini = async (
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           image: cleanBase64,
-          // prompt: USER_PROMPT, // REMOVED: Prompt is now injected on server-side for security
+          prompt: USER_PROMPT,
           accessCode: accessCode,
           imageSize: imageSize,
           aspectRatio: getClosestAspectRatio(width, height)

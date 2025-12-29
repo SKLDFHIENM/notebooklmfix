@@ -18,12 +18,7 @@ export default async function handler(req, res) {
 
     try {
         // Node.js runtime automatically parses JSON body into req.body
-        const { image, accessCode, imageSize, aspectRatio } = req.body;
-
-        // --- PROMPT SECURITY: DEFINE ON SERVER SIDE ---
-        // Do not trust client-sent prompts. Use server-controlled prompts.
-        const SYSTEM_PROMPT = "你是一个专业的图像修复专家。";
-        const USER_PROMPT = "请将这张图片用最高的分辨率生成；2. 修复图片中的中文文字错误，修复的过程中，如遇原文字特别不清晰的，或错误特别严重的，需要结合语境做解读，猜测它具体是什么文字。（但不可把一个文字改成另外一个毫不相干的文字）。3. 请保持原图的构图、布局、文字内容完全一致，仅提升画质、清晰度以及修复文字错误。";
+        const { image, prompt, accessCode, imageSize, aspectRatio } = req.body;
 
         // 1. Validate Access Code & Quota via Vercel KV (Hash)
         const key = `ac:${accessCode}`;
@@ -55,7 +50,7 @@ export default async function handler(req, res) {
             model: 'gemini-3-pro-image-preview',
             contents: {
                 parts: [
-                    { text: USER_PROMPT }, // Use server-side prompt
+                    { text: prompt },
                     {
                         inlineData: {
                             mimeType: 'image/png',
@@ -65,7 +60,6 @@ export default async function handler(req, res) {
                 ],
             },
             config: {
-                systemInstruction: SYSTEM_PROMPT, // Also apply system prompt
                 imageConfig: {
                     aspectRatio: aspectRatio || "1:1",
                     imageSize: imageSize || "4K", // Force 4K if using Access Code
