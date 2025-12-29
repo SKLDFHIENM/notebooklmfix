@@ -66,14 +66,12 @@ export default async function handler(req, res) {
             },
             config: {
                 systemInstruction: SYSTEM_PROMPT, // Also apply system prompt
-
-                config: {
-                    imageConfig: {
-                        aspectRatio: aspectRatio || "1:1",
-                        imageSize: imageSize || "4K", // Force 4K if using Access Code
-                    }
+                imageConfig: {
+                    aspectRatio: aspectRatio || "1:1",
+                    imageSize: imageSize || "4K", // Force 4K if using Access Code
                 }
-            });
+            }
+        });
 
         // 4. Deduct Quota (Atomic HINCRBY)
         const newRemaining = await kv.hincrby(key, 'remaining', -1);
