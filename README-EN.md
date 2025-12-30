@@ -20,6 +20,10 @@
 
 ## ✨ Core Features
 
+> **🚀 v2.2.3 Prompt Refined**
+> - **Enhanced Text Accuracy**: Underlying prompts have been optimized to use context (paragraphs, sentences) to infer blurred text, significantly reducing hallucinations and typos.
+> - **Stricter Layout Control**: Strengthened constraints on "composition, color distribution, and UI layout" to ensure the restored image is visually consistent with the original, preventing structural restructuring.
+>
 > **🚀 New in v2.2.2 (UX Polish)**
 > - **Quota Safe Mode**:
 >   - **Smart Alerts**: Dual feedback via **Toast** & **Tooltip** when errors occur, explicitly confirming "No Quota Deducted".
