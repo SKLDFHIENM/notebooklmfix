@@ -167,7 +167,7 @@ const marqueeCSS = `
 `;
 
 export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
-    const [imagesFixed, setImagesFixed] = useState(2849);
+    const [imagesFixed, setImagesFixed] = useState<number | null>(null);
 
     // 获取真实统计数据
     useEffect(() => {
@@ -176,9 +176,13 @@ export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
             .then(data => {
                 if (data.imagesFixed) {
                     setImagesFixed(data.imagesFixed);
+                } else {
+                    setImagesFixed(2849); // fallback
                 }
             })
-            .catch(() => { });
+            .catch(() => {
+                setImagesFixed(2849); // fallback on error
+            });
     }, []);
 
     // 复制 3 组保证无缝
@@ -231,7 +235,9 @@ export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
             {/* Social Proof Stats */}
             <div className="flex items-center justify-center gap-10 mt-10 pt-8 border-t border-zinc-200/50 dark:border-white/5">
                 <div className="text-center">
-                    <p className="text-3xl font-bold text-zinc-900 dark:text-white">{imagesFixed.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-zinc-900 dark:text-white">
+                        {imagesFixed !== null ? imagesFixed.toLocaleString() : <span className="inline-block w-16 h-8 bg-zinc-200 dark:bg-zinc-700 rounded animate-pulse" />}
+                    </p>
                     <p className="text-xs text-zinc-500 mt-1">{lang === 'en' ? 'Images Fixed' : '图片已修复'}</p>
                 </div>
                 <div className="w-px h-10 bg-zinc-200 dark:bg-zinc-700"></div>
