@@ -172,6 +172,26 @@ export function useImageProcessing({
         setTimeout(() => setShowStoppingToast(false), 2000);
     };
 
+    // Improvement #2: Retry single failed page
+    const retryPage = (index: number) => {
+        setPages(prev => {
+            const newPages = [...prev];
+            if (newPages[index] && newPages[index].status === 'error') {
+                newPages[index] = {
+                    ...newPages[index],
+                    status: 'pending',
+                    selected: true,
+                    processedUrl: undefined
+                };
+            }
+            return newPages;
+        });
+    };
+
+    // Improvement #3: Computed stats for CompletionBanner
+    const successCount = pages.filter(p => p.status === 'completed').length;
+    const failCount = pages.filter(p => p.status === 'error').length;
+
     return {
         isProcessing,
         isStopped,
@@ -187,6 +207,9 @@ export function useImageProcessing({
         showErrorToast,
         errorToastMessage,
         startProcessing,
-        stopProcessing
+        stopProcessing,
+        retryPage,
+        successCount,
+        failCount
     };
 }

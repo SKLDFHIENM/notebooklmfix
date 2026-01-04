@@ -76,7 +76,10 @@ const App: React.FC = () => {
     showErrorToast,
     errorToastMessage,
     startProcessing,
-    stopProcessing
+    stopProcessing,
+    retryPage,
+    successCount,
+    failCount
   } = useImageProcessing({
     pages,
     setPages, // Passing setPages to allow updating status/url
@@ -89,7 +92,11 @@ const App: React.FC = () => {
   });
 
   // --- UI State ---
-  const [lang, setLang] = useState<Language>('cn');
+  // Improvement #6: Language Memory
+  const [lang, setLang] = useState<Language>(() => {
+    const saved = localStorage.getItem('notebooklm_fixer_lang');
+    return (saved === 'en' || saved === 'cn') ? saved : 'cn';
+  });
   const [theme, setTheme] = useState<Theme>('dark');
   const [viewingIndex, setViewingIndex] = useState<number | null>(null);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
@@ -122,6 +129,11 @@ const App: React.FC = () => {
       document.documentElement.classList.remove('dark');
     }
   }, [theme]);
+
+  // Improvement #6: Save language to localStorage
+  useEffect(() => {
+    localStorage.setItem('notebooklm_fixer_lang', lang);
+  }, [lang]);
 
   // --- Helper Functions ---
   const toggleTheme = (event: React.MouseEvent) => {
@@ -444,6 +456,7 @@ const App: React.FC = () => {
           handleDownloadSingleImage={handleDownloadSingleImage}
           currentProcessingIndex={currentProcessingIndex}
           resolution={resolution}
+          onRetryPage={retryPage}
         />
 
       </main>
@@ -481,6 +494,8 @@ const App: React.FC = () => {
         t={t}
         lang={lang}
         completedCount={completedCount}
+        successCount={successCount}
+        failCount={failCount}
         handleExportPdf={doExportPdf}
         isExportingPdf={isExportingPdf}
         handleExportPptx={doExportPptx}

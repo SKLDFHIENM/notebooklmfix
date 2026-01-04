@@ -17,6 +17,8 @@ interface CompletionBannerProps {
     t: any;
     lang: 'en' | 'cn';
     completedCount: number;
+    successCount: number;
+    failCount: number;
     handleExportPdf: () => void;
     isExportingPdf: boolean;
     handleExportPptx: () => void;
@@ -34,6 +36,8 @@ export const CompletionBanner: React.FC<CompletionBannerProps> = ({
     t,
     lang,
     completedCount,
+    successCount,
+    failCount,
     handleExportPdf,
     isExportingPdf,
     handleExportPptx,
@@ -48,23 +52,24 @@ export const CompletionBanner: React.FC<CompletionBannerProps> = ({
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6 flex justify-center pointer-events-none">
-            <div className={`pointer-events-auto max-w-3xl w-full bg-white dark:bg-zinc-900 border shadow-2xl rounded-2xl p-4 flex items-center justify-between gap-4 animate-in slide-in-from-bottom-10 fade-in duration-500 ${isStopped ? 'border-amber-500/30 shadow-amber-500/10' : 'border-emerald-500/30 shadow-emerald-500/20'}`}>
+            <div className={`pointer-events-auto max-w-3xl w-full bg-white dark:bg-zinc-900 border shadow-2xl rounded-2xl p-4 flex items-center justify-between gap-4 animate-in slide-in-from-bottom-10 fade-in duration-500 ${isStopped ? 'border-amber-500/30 shadow-amber-500/10' : failCount > 0 ? 'border-amber-500/30 shadow-amber-500/10' : 'border-emerald-500/30 shadow-emerald-500/20'}`}>
 
                 {/* Left: Icon + Text */}
                 <div className="flex items-center gap-3 shrink-0">
-                    <div className={`p-2.5 rounded-full shrink-0 ${isStopped ? 'bg-amber-500/10 text-amber-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
-                        {isStopped ? <AlertCircle className="w-5 h-5" /> : <Sparkles className="w-5 h-5 fill-current" />}
+                    <div className={`p-2.5 rounded-full shrink-0 ${isStopped ? 'bg-amber-500/10 text-amber-500' : failCount > 0 ? 'bg-amber-500/10 text-amber-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
+                        {isStopped || failCount > 0 ? <AlertCircle className="w-5 h-5" /> : <Sparkles className="w-5 h-5 fill-current" />}
                     </div>
                     <div className="min-w-0">
                         <h3 className="text-sm font-bold text-zinc-900 dark:text-white whitespace-nowrap">
-                            {isStopped ? t.stopped : t.allDone}
+                            {isStopped ? t.stopped : failCount > 0 ? (lang === 'en' ? 'Completed with Issues' : '处理完成 (部分失败)') : t.allDone}
                         </h3>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
-                            {isStopped
-                                ? `${completedCount} ${lang === 'en' ? 'pages ready' : '页已就绪'}`
-                                : t.downloadNow}
-                        </p>
-                        {!isStopped && (
+                        {/* Improvement #3: Batch Statistics */}
+                        <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+                            <span className="text-emerald-600 dark:text-emerald-400 font-medium">✓ {successCount}</span>
+                            {failCount > 0 && <span className="text-red-500 font-medium">✗ {failCount}</span>}
+                            <span className="text-zinc-400">/ {successCount + failCount}</span>
+                        </div>
+                        {!isStopped && failCount === 0 && (
                             <div className="flex items-center gap-1 text-[10px] text-zinc-400 dark:text-zinc-500 mt-1">
                                 <Archive className="w-3 h-3" />
                                 <span>{lang === 'en' ? 'Saved to Archive Box' : '已存入本地档案盒'}</span>

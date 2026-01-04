@@ -4,7 +4,9 @@ import {
     ChevronLeft,
     ChevronRight,
     Eye,
-    Sparkles
+    Sparkles,
+    ZoomIn,
+    ZoomOut
 } from 'lucide-react';
 import { ProcessedPage } from '../../types';
 
@@ -26,6 +28,8 @@ export const ComparisonModal: React.FC<ComparisonModalProps> = ({
     lang
 }) => {
     const [isHoldingCompare, setIsHoldingCompare] = useState(false);
+    // Improvement #8: Zoom functionality
+    const [zoomLevel, setZoomLevel] = useState(1);
 
     // Global Key Handler for Modal
     useEffect(() => {
@@ -70,6 +74,11 @@ export const ComparisonModal: React.FC<ComparisonModalProps> = ({
         };
     }, [viewingIndex, pages, onClose, onNavigate]);
 
+    // Reset zoom when navigating
+    useEffect(() => {
+        setZoomLevel(1);
+    }, [viewingIndex]);
+
     if (viewingIndex === null || !pages[viewingIndex]) return null;
 
     const page = pages[viewingIndex];
@@ -98,7 +107,7 @@ export const ComparisonModal: React.FC<ComparisonModalProps> = ({
                     </div>
                     <span className="text-xs font-mono-custom text-white/40 flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.8)]"></span>
-                        {t.page} {page.pageIndex}
+                        {t.page} {page.pageIndex + 1}
                     </span>
                 </div>
 
@@ -161,18 +170,24 @@ export const ComparisonModal: React.FC<ComparisonModalProps> = ({
 
                     {/* The Image Itself */}
                     <div
-                        className="relative max-h-full max-w-full aspect-[3/4] md:aspect-auto rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 bg-black/50 backdrop-blur-sm animate-in zoom-in-95 duration-300 cursor-zoom-in"
+                        className="relative max-h-full max-w-full aspect-[3/4] md:aspect-auto rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 bg-black/50 backdrop-blur-sm animate-in zoom-in-95 duration-300"
                         onMouseDown={() => setIsHoldingCompare(true)}
                         onMouseUp={() => setIsHoldingCompare(false)}
                         onMouseLeave={() => setIsHoldingCompare(false)}
                         onTouchStart={() => setIsHoldingCompare(true)}
                         onTouchEnd={() => setIsHoldingCompare(false)}
                         onClick={(e) => e.stopPropagation()}
+                        onWheel={(e) => {
+                            e.preventDefault();
+                            const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                            setZoomLevel(prev => Math.max(0.5, Math.min(3, prev + delta)));
+                        }}
                     >
                         <img
                             src={isHoldingCompare ? page.originalUrl : (page.processedUrl || page.originalUrl)}
                             alt="Comparison"
-                            className="max-h-[80vh] w-auto object-contain transition-opacity duration-200"
+                            className="max-h-[80vh] w-auto object-contain transition-all duration-200"
+                            style={{ transform: `scale(${zoomLevel})`, cursor: zoomLevel > 1 ? 'move' : 'zoom-in' }}
                             draggable={false}
                         />
 
@@ -212,6 +227,17 @@ export const ComparisonModal: React.FC<ComparisonModalProps> = ({
                     <span className="text-sm font-medium text-zinc-300 group-hover:text-white transition-colors">
                         {t.holdToView}
                     </span>
+                </div>
+
+                {/* Zoom Controls */}
+                <div className="inline-flex items-center gap-2 ml-4 pointer-events-auto">
+                    <button onClick={() => setZoomLevel(prev => Math.max(0.5, prev - 0.25))} className="p-2 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 text-zinc-400 hover:text-white transition-colors">
+                        <ZoomOut className="w-4 h-4" />
+                    </button>
+                    <span className="text-xs font-mono text-zinc-400 w-12 text-center">{Math.round(zoomLevel * 100)}%</span>
+                    <button onClick={() => setZoomLevel(prev => Math.min(3, prev + 0.25))} className="p-2 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 text-zinc-400 hover:text-white transition-colors">
+                        <ZoomIn className="w-4 h-4" />
+                    </button>
                 </div>
 
                 <div className="mt-3 text-[10px] items-center justify-center gap-4 text-white/20 font-mono-custom hidden md:flex">

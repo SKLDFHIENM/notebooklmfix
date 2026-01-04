@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Archive, Download, Trash2, CheckCircle2, Circle, AlertTriangle, Clock } from 'lucide-react';
+import { X, Archive, Download, Trash2, CheckCircle2, Circle, AlertTriangle, Clock, Search, Filter } from 'lucide-react';
 import { useArchive } from '../../hooks/useArchive';
 import { generateArchiveZip } from '../../services/pdfService';
 import { ArchivedImage } from '../../db/archive';
@@ -17,13 +17,41 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteConfirmMode, setDeleteConfirmMode] = useState(false);
 
+    // Improvement #5: Search and Filter
+    const [searchQuery, setSearchQuery] = useState('');
+    const [resolutionFilter, setResolutionFilter] = useState<'all' | '2K' | '4K'>('all');
+
     // Reset selection when modal closes or images change significantly
     useEffect(() => {
         if (!isOpen) {
             setDeleteConfirmMode(false);
             setSelectedIds([]);
+            setSearchQuery('');
+            setResolutionFilter('all');
         }
     }, [isOpen]);
+
+    // Filtered images based on search and resolution
+    const filteredImages = useMemo(() => {
+        if (!images) return [];
+        return images.filter(img => {
+            // Resolution filter
+            const is4K = img.width > 3000;
+            if (resolutionFilter === '4K' && !is4K) return false;
+            if (resolutionFilter === '2K' && is4K) return false;
+
+            // Search filter (by date)
+            if (searchQuery.trim()) {
+                const query = searchQuery.toLowerCase();
+                const dateStr = new Date(img.createdAt).toLocaleDateString();
+                const dateStrAlt = new Date(img.createdAt).toLocaleString().toLowerCase();
+                if (!dateStr.includes(query) && !dateStrAlt.includes(query)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }, [images, searchQuery, resolutionFilter]);
 
     const toggleSelect = (id: number) => {
         setDeleteConfirmMode(false); // Cancel delete confirm on selection change
@@ -33,11 +61,11 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
     };
 
     const handleSelectAll = () => {
-        if (!images) return;
-        if (selectedIds.length === images.length) {
+        if (!filteredImages) return;
+        if (selectedIds.length === filteredImages.length) {
             setSelectedIds([]);
         } else {
-            setSelectedIds(images.map(img => img.id!));
+            setSelectedIds(filteredImages.map(img => img.id!));
         }
     };
 
@@ -122,6 +150,40 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
                             </p>
                         </div>
 
+                        {/* Improvement #5: Search & Filter Bar */}
+                        {images && images.length > 0 && (
+                            <div className="px-6 py-3 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-white dark:bg-zinc-900/50">
+                                {/* Search Input */}
+                                <div className="relative flex-1">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                                    <input
+                                        type="text"
+                                        placeholder={lang === 'en' ? 'Search by date...' : '按日期搜索...'}
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full pl-9 pr-4 py-2 text-sm bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 text-zinc-900 dark:text-white placeholder-zinc-400"
+                                    />
+                                </div>
+
+                                {/* Resolution Filter */}
+                                <div className="flex items-center gap-1 bg-zinc-100 dark:bg-white/5 p-1 rounded-lg border border-zinc-200 dark:border-white/10">
+                                    <Filter className="w-4 h-4 text-zinc-400 mx-1.5" />
+                                    {(['all', '2K', '4K'] as const).map(res => (
+                                        <button
+                                            key={res}
+                                            onClick={() => setResolutionFilter(res)}
+                                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${resolutionFilter === res
+                                                ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm'
+                                                : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'
+                                                }`}
+                                        >
+                                            {res === 'all' ? (lang === 'en' ? 'All' : '全部') : res}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Content Grid */}
                         <div className="flex-1 overflow-y-auto p-6 min-h-[300px] bg-zinc-50/50 dark:bg-black/20">
                             {!images || images.length === 0 ? (
@@ -129,10 +191,15 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
                                     <Archive className="w-12 h-12 mb-4 opacity-20" />
                                     <p className="text-sm">{lang === 'en' ? 'Archive is empty' : '暂无存档记录'}</p>
                                 </div>
+                            ) : filteredImages.length === 0 ? (
+                                <div className="h-full flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600">
+                                    <Search className="w-12 h-12 mb-4 opacity-20" />
+                                    <p className="text-sm">{lang === 'en' ? 'No matching results' : '未找到匹配结果'}</p>
+                                </div>
                             ) : (
                                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                     <AnimatePresence>
-                                        {images.map((img) => (
+                                        {filteredImages.map((img) => (
                                             <motion.div
                                                 key={img.id}
                                                 layout
@@ -140,8 +207,8 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
                                                 animate={{ opacity: 1, scale: 1 }}
                                                 exit={{ opacity: 0, scale: 0.5 }}
                                                 className={`group relative aspect-[3/4] bg-white dark:bg-zinc-800 rounded-xl overflow-hidden shadow-sm border transaction-all duration-200 cursor-pointer ${selectedIds.includes(img.id!)
-                                                        ? 'ring-2 ring-indigo-500 border-indigo-500'
-                                                        : 'border-zinc-200 dark:border-white/5 hover:border-indigo-300 dark:hover:border-indigo-700'
+                                                    ? 'ring-2 ring-indigo-500 border-indigo-500'
+                                                    : 'border-zinc-200 dark:border-white/5 hover:border-indigo-300 dark:hover:border-indigo-700'
                                                     }`}
                                                 onClick={() => toggleSelect(img.id!)}
                                             >
@@ -193,8 +260,8 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
                                     className="text-xs font-medium text-zinc-500 dark:text-zinc-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors px-2 py-1.5 rounded hover:bg-zinc-100 dark:hover:bg-white/5"
                                 >
                                     {lang === 'en'
-                                        ? (selectedIds.length === images?.length ? 'Deselect All' : 'Select All')
-                                        : (selectedIds.length === images?.length ? '取消全选' : '全选')
+                                        ? (selectedIds.length === filteredImages?.length ? 'Deselect All' : 'Select All')
+                                        : (selectedIds.length === filteredImages?.length ? '取消全选' : '全选')
                                     }
                                 </button>
                                 <span className="text-xs text-zinc-400 border-l border-zinc-200 dark:border-white/10 pl-2">

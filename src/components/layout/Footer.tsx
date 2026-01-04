@@ -1,5 +1,5 @@
-import React from 'react';
-import { Github } from 'lucide-react';
+import React, { useState } from 'react';
+import { Github, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface FooterProps {
     t: any;
@@ -7,13 +7,25 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ t, onOpenLegal }) => {
+    // Improvement #7: Collapsible Disclaimer
+    const [isDisclaimerExpanded, setIsDisclaimerExpanded] = useState(false);
+
     return (
         <footer className="w-full py-12 mt-auto border-t border-zinc-200/50 dark:border-white/5 bg-zinc-50/50 dark:bg-black/20 backdrop-blur-sm">
             <div className="max-w-5xl mx-auto px-6 flex flex-col gap-8">
 
-                {/* Minimal Disclaimer (Apple Style) */}
+                {/* Collapsible Disclaimer */}
                 <div className="text-[10px] text-zinc-400 dark:text-zinc-500 leading-relaxed max-w-3xl">
-                    <p>{t.disclaimerText}</p>
+                    <button
+                        onClick={() => setIsDisclaimerExpanded(!isDisclaimerExpanded)}
+                        className="flex items-center gap-1 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors mb-2"
+                    >
+                        {isDisclaimerExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                        <span className="font-medium">Disclaimer</span>
+                    </button>
+                    <div className={`overflow-hidden transition-all duration-300 ${isDisclaimerExpanded ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                        <p className="pt-1">{t.disclaimerText}</p>
+                    </div>
                 </div>
 
                 <div className="h-px w-full bg-zinc-200/50 dark:bg-white/5"></div>
