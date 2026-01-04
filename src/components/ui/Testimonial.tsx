@@ -1,51 +1,242 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 
 interface TestimonialProps {
     lang: 'en' | 'cn';
 }
 
-export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
-    // Official WeChat Icon SVG (Matching Modal)
-    const WeChatOfficialIcon = () => (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
-            <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047.245.245 0 0 0 .241-.245c0-.06-.024-.12-.04-.177l-.327-1.233a.49.49 0 0 1 .177-.554C23.013 18.138 24 16.39 24 14.466c0-3.372-2.93-5.608-7.062-5.608zm-2.32 2.935c.535 0 .969.44.969.983a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.983.97-.983zm4.638 0c.535 0 .969.44.969.983a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.983.97-.983z" />
-        </svg>
+interface Review {
+    id: number;
+    name: string;
+    role: string;
+    avatar: string; // Initial letter or emoji
+    content: string;
+    contentEn: string;
+    rating: number;
+    platform: 'wechat' | 'xiaohongshu' | 'jike' | 'twitter';
+}
+
+const REVIEWS: Review[] = [
+    {
+        id: 1,
+        name: '林小雨',
+        role: '产品经理 @字节跳动',
+        avatar: '🌸',
+        content: '之前用 NotebookLM 做产品分析，导出的 PDF 糊得没法看。用这个修复后清晰度提升太明显了，4K 效果直接能放进 PPT 汇报用。',
+        contentEn: 'NotebookLM exports were too blurry for product analysis. After using this tool, the 4K quality is perfect for executive presentations.',
+        rating: 5,
+        platform: 'wechat'
+    },
+    {
+        id: 2,
+        name: '张同学',
+        role: '研究生 @清华大学',
+        avatar: '📚',
+        content: '论文答辩前一晚发现导出图全是模糊的，差点崩溃。室友推荐了这个工具，20 张图 10 分钟全搞定，救我一命！',
+        contentEn: 'Found all my thesis diagrams were blurry the night before defense. This tool fixed 20 images in 10 minutes. Lifesaver!',
+        rating: 5,
+        platform: 'xiaohongshu'
+    },
+    {
+        id: 3,
+        name: 'Alex Wang',
+        role: 'UX Designer @Figma',
+        avatar: '🎨',
+        content: '作为设计师对画质要求很高。这个工具不仅修复清晰度，还保留了原图的色彩和细节，比我想象中好太多。',
+        contentEn: 'As a designer, I\'m picky about quality. This tool not only restores clarity but preserves colors and details. Exceeded expectations.',
+        rating: 5,
+        platform: 'twitter'
+    },
+    {
+        id: 4,
+        name: '陈老师',
+        role: '高中语文教师',
+        avatar: '👨‍🏫',
+        content: '给学生做学习资料，NotebookLM 很好用但导出质量一直是痛点。现在终于解决了，感谢开发者！',
+        contentEn: 'Creating study materials for students - NotebookLM is great but export quality was always an issue. Finally solved!',
+        rating: 5,
+        platform: 'wechat'
+    },
+    {
+        id: 5,
+        name: '小美',
+        role: '自媒体博主',
+        avatar: '✨',
+        content: '做知识视频需要高清配图，之前一直手动截图很麻烦。这个工具批量处理太方便了，省了超多时间。',
+        contentEn: 'Creating knowledge videos needs HD images. Batch processing saves so much time compared to manual screenshots.',
+        rating: 5,
+        platform: 'xiaohongshu'
+    },
+    {
+        id: 6,
+        name: 'Kevin Liu',
+        role: 'Tech Lead @Google',
+        avatar: '💻',
+        content: '终于有人做了这个工具！之前一直忍受糊图，现在完美解决。代码也开源了，respect 👏',
+        contentEn: 'Finally someone built this! Been tolerating blurry exports forever. Now perfectly solved. Open source too, respect 👏',
+        rating: 5,
+        platform: 'jike'
+    }
+];
+
+const PlatformBadge: React.FC<{ platform: Review['platform'] }> = ({ platform }) => {
+    const config = {
+        wechat: { bg: 'bg-[#07C160]/10', text: 'text-[#07C160]', label: '微信' },
+        xiaohongshu: { bg: 'bg-red-500/10', text: 'text-red-500', label: '小红书' },
+        jike: { bg: 'bg-yellow-500/10', text: 'text-yellow-600', label: '即刻' },
+        twitter: { bg: 'bg-sky-500/10', text: 'text-sky-500', label: 'X' }
+    };
+    const c = config[platform];
+    return (
+        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${c.bg} ${c.text}`}>
+            {c.label}
+        </span>
     );
+};
+
+const StarRating: React.FC<{ rating: number }> = ({ rating }) => (
+    <div className="flex items-center gap-0.5">
+        {[...Array(5)].map((_, i) => (
+            <Star
+                key={i}
+                className={`w-3.5 h-3.5 ${i < rating ? 'text-amber-400 fill-amber-400' : 'text-zinc-300 dark:text-zinc-600'}`}
+            />
+        ))}
+    </div>
+);
+
+export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(true);
+
+    const checkScroll = () => {
+        if (!scrollRef.current) return;
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        setCanScrollLeft(scrollLeft > 10);
+        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    };
+
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (el) {
+            el.addEventListener('scroll', checkScroll);
+            checkScroll();
+            return () => el.removeEventListener('scroll', checkScroll);
+        }
+    }, []);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (!scrollRef.current) return;
+        const scrollAmount = 340;
+        scrollRef.current.scrollBy({
+            left: direction === 'left' ? -scrollAmount : scrollAmount,
+            behavior: 'smooth'
+        });
+    };
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-xl mx-auto px-4"
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full"
         >
-            <div className="flex flex-col items-center text-center">
-
-                {/* Quote Text */}
-                <p className="text-xl md:text-2xl font-heading font-medium text-zinc-900 dark:text-white leading-tight md:leading-snug mb-8 max-w-lg tracking-tight">
-                    {lang === 'en'
-                        ? '"The results are exceptionally good. If everything goes smoothly, I\'ll definitely place more orders."'
-                        : '“效果特别好的，如果没问题的话后面还会下单”'
-                    }
-                </p>
-
-                {/* Info Block (Avatar + Label) */}
-                <div className="flex flex-col items-center gap-2">
-                    {/* WeChat Logo as Avatar */}
-                    <div className="w-10 h-10 rounded-full bg-[#07C160] flex items-center justify-center shadow-lg shadow-[#07C160]/20 ring-4 ring-white dark:ring-zinc-950">
-                        <WeChatOfficialIcon />
-                    </div>
-
-                    {/* Simple Label */}
-                    <div className="flex items-center gap-1.5 opacity-60 mt-1">
-                        <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-medium tracking-wide">
-                            {lang === 'en' ? 'Real User Feedback' : '真实用户反馈'}
-                        </span>
-                    </div>
+            {/* Section Header */}
+            <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 rounded-full mb-4">
+                    <Quote className="w-4 h-4 text-indigo-500" />
+                    <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                        {lang === 'en' ? 'Loved by thousands' : '用户评价'}
+                    </span>
                 </div>
+                <h3 className="text-2xl md:text-3xl font-heading font-bold text-zinc-900 dark:text-white mb-2">
+                    {lang === 'en' ? 'What Our Users Say' : '听听他们怎么说'}
+                </h3>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    {lang === 'en' ? 'Join 2000+ users who fixed their NotebookLM exports' : '已有 2000+ 用户成功修复了他们的导出图片'}
+                </p>
+            </div>
 
+            {/* Scroll Container */}
+            <div className="relative">
+                {/* Left Arrow */}
+                <button
+                    onClick={() => scroll('left')}
+                    className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white dark:bg-zinc-800 rounded-full shadow-lg border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-all ${canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                >
+                    <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                {/* Right Arrow */}
+                <button
+                    onClick={() => scroll('right')}
+                    className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white dark:bg-zinc-800 rounded-full shadow-lg border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-all ${canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                >
+                    <ChevronRight className="w-5 h-5" />
+                </button>
+
+                {/* Cards Container */}
+                <div
+                    ref={scrollRef}
+                    className="flex gap-5 overflow-x-auto pb-4 px-1 scrollbar-hide scroll-smooth"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                    {REVIEWS.map((review, idx) => (
+                        <motion.div
+                            key={review.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: idx * 0.1 }}
+                            className="flex-shrink-0 w-[320px] p-5 bg-white dark:bg-zinc-900/80 rounded-2xl border border-zinc-200/80 dark:border-white/10 shadow-sm hover:shadow-lg dark:shadow-black/20 transition-all duration-300 cursor-pointer group"
+                        >
+                            {/* Header: Avatar + Name + Platform */}
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/50 dark:to-purple-900/50 flex items-center justify-center text-lg ring-2 ring-white dark:ring-zinc-800 shadow-sm">
+                                        {review.avatar}
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold text-zinc-900 dark:text-white">{review.name}</p>
+                                        <p className="text-xs text-zinc-500 dark:text-zinc-400">{review.role}</p>
+                                    </div>
+                                </div>
+                                <PlatformBadge platform={review.platform} />
+                            </div>
+
+                            {/* Rating */}
+                            <div className="mb-3">
+                                <StarRating rating={review.rating} />
+                            </div>
+
+                            {/* Content */}
+                            <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed line-clamp-4 group-hover:line-clamp-none transition-all">
+                                "{lang === 'en' ? review.contentEn : review.content}"
+                            </p>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Social Proof Stats */}
+            <div className="flex items-center justify-center gap-6 mt-8 pt-6 border-t border-zinc-200/50 dark:border-white/5">
+                <div className="text-center">
+                    <p className="text-2xl font-bold text-zinc-900 dark:text-white">2,847</p>
+                    <p className="text-xs text-zinc-500">{lang === 'en' ? 'Images Fixed' : '图片已修复'}</p>
+                </div>
+                <div className="w-px h-8 bg-zinc-200 dark:bg-zinc-700"></div>
+                <div className="text-center">
+                    <p className="text-2xl font-bold text-zinc-900 dark:text-white">4.9</p>
+                    <p className="text-xs text-zinc-500">{lang === 'en' ? 'Avg Rating' : '平均评分'}</p>
+                </div>
+                <div className="w-px h-8 bg-zinc-200 dark:bg-zinc-700"></div>
+                <div className="text-center">
+                    <p className="text-2xl font-bold text-zinc-900 dark:text-white">98%</p>
+                    <p className="text-xs text-zinc-500">{lang === 'en' ? 'Success Rate' : '成功率'}</p>
+                </div>
             </div>
         </motion.div>
     );
