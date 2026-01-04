@@ -162,6 +162,16 @@ export function useImageProcessing({
         // 2. OR Processing was manually stopped AND at least one success
         if (hasSuccessfulPages && (allSelectedDone || abortRef.current)) {
             setShowCompletionBanner(true);
+
+            // Track successful images for global stats
+            const successfulCount = selectedPages.filter(p => p.status === 'completed').length;
+            if (successfulCount > 0) {
+                fetch('/api/stats', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ count: successfulCount })
+                }).catch(() => { /* Silent fail */ });
+            }
         }
     };
 

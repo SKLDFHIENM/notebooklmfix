@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Quote } from 'lucide-react';
+import { Quote } from 'lucide-react';
 
 interface TestimonialProps {
     lang: 'en' | 'cn';
@@ -13,7 +13,6 @@ interface Review {
     avatar: string;
     content: string;
     contentEn: string;
-    rating: number;
     platform: 'wechat' | 'xiaohongshu' | 'jike' | 'twitter';
 }
 
@@ -25,7 +24,6 @@ const REVIEWS: Review[] = [
         avatar: '🪶',
         content: '效果特别好的，如果没问题的话后面还会下单',
         contentEn: 'The results are great. Will definitely order more if everything goes smoothly.',
-        rating: 5,
         platform: 'wechat'
     },
     {
@@ -35,7 +33,6 @@ const REVIEWS: Review[] = [
         avatar: '🌸',
         content: '4K 效果太明显了，直接能放 PPT 汇报',
         contentEn: '4K quality is amazing, perfect for executive presentations.',
-        rating: 5,
         platform: 'wechat'
     },
     {
@@ -45,7 +42,6 @@ const REVIEWS: Review[] = [
         avatar: '📚',
         content: '答辩前一晚发现图全糊了，这工具救我一命！20 张图 10 分钟搞定',
         contentEn: 'Saved my thesis defense! Fixed 20 blurry images in 10 minutes.',
-        rating: 5,
         platform: 'xiaohongshu'
     },
     {
@@ -55,7 +51,6 @@ const REVIEWS: Review[] = [
         avatar: '🎨',
         content: '清晰度拉满，色彩还原也很准',
         contentEn: 'Crystal clear, color accuracy is spot on.',
-        rating: 5,
         platform: 'twitter'
     },
     {
@@ -65,7 +60,6 @@ const REVIEWS: Review[] = [
         avatar: '👨‍🏫',
         content: '做学习资料终于不用忍受糊图了，感谢！',
         contentEn: 'Finally no more blurry images for study materials. Thanks!',
-        rating: 5,
         platform: 'wechat'
     },
     {
@@ -75,7 +69,6 @@ const REVIEWS: Review[] = [
         avatar: '✨',
         content: '批量处理太方便了，省超多时间',
         contentEn: 'Batch processing is so convenient, saves tons of time.',
-        rating: 5,
         platform: 'xiaohongshu'
     },
     {
@@ -85,7 +78,6 @@ const REVIEWS: Review[] = [
         avatar: '💻',
         content: '终于有人做了！开源项目 respect 👏',
         contentEn: 'Finally someone built this! Open source, respect 👏',
-        rating: 5,
         platform: 'jike'
     },
     {
@@ -95,7 +87,6 @@ const REVIEWS: Review[] = [
         avatar: '📊',
         content: '导出图清清楚楚，领导都夸报告质量提升了',
         contentEn: 'Exports are crystal clear now, boss praised the improved report quality.',
-        rating: 5,
         platform: 'wechat'
     },
     {
@@ -105,7 +96,6 @@ const REVIEWS: Review[] = [
         avatar: '💼',
         content: '给客户做方案再也不尴尬了',
         contentEn: 'No more embarrassing blurry images in client proposals.',
-        rating: 5,
         platform: 'xiaohongshu'
     }
 ];
@@ -125,17 +115,6 @@ const PlatformBadge: React.FC<{ platform: Review['platform'] }> = ({ platform })
     );
 };
 
-const StarRating: React.FC<{ rating: number }> = ({ rating }) => (
-    <div className="flex items-center gap-0.5">
-        {[...Array(5)].map((_, i) => (
-            <Star
-                key={i}
-                className={`w-3.5 h-3.5 ${i < rating ? 'text-amber-400 fill-amber-400' : 'text-zinc-300 dark:text-zinc-600'}`}
-            />
-        ))}
-    </div>
-);
-
 // Single review card component
 const ReviewCard: React.FC<{ review: Review; lang: 'en' | 'cn' }> = ({ review, lang }) => (
     <div className="flex-shrink-0 w-[300px] p-5 bg-white dark:bg-zinc-900/80 rounded-2xl border border-zinc-200/80 dark:border-white/10 shadow-sm">
@@ -147,27 +126,39 @@ const ReviewCard: React.FC<{ review: Review; lang: 'en' | 'cn' }> = ({ review, l
                 </div>
                 <div>
                     <p className="text-sm font-semibold text-zinc-900 dark:text-white">{review.name}</p>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">{review.role}</p>
+                    {review.role && <p className="text-xs text-zinc-500 dark:text-zinc-400">{review.role}</p>}
                 </div>
             </div>
             <PlatformBadge platform={review.platform} />
         </div>
 
-        {/* Rating */}
-        <div className="mb-2">
-            <StarRating rating={review.rating} />
-        </div>
-
         {/* Content */}
-        <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed line-clamp-3">
+        <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
             "{lang === 'en' ? review.contentEn : review.content}"
         </p>
     </div>
 );
 
 export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
+    const [isPaused, setIsPaused] = useState(false);
+    const [imagesFixed, setImagesFixed] = useState(2849);
+
     // 复制数组以实现无缝循环
     const duplicatedReviews = [...REVIEWS, ...REVIEWS];
+
+    // 获取真实统计数据
+    useEffect(() => {
+        fetch('/api/stats')
+            .then(res => res.json())
+            .then(data => {
+                if (data.imagesFixed) {
+                    setImagesFixed(data.imagesFixed);
+                }
+            })
+            .catch(() => {
+                // 失败时使用默认值
+            });
+    }, []);
 
     return (
         <motion.div
@@ -193,11 +184,15 @@ export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
                 </p>
             </div>
 
-            {/* Auto-scrolling Marquee */}
-            <div className="relative overflow-hidden">
-                {/* Gradient Masks */}
-                <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-zinc-50 dark:from-zinc-950 to-transparent z-10 pointer-events-none" />
-                <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-zinc-50 dark:from-zinc-950 to-transparent z-10 pointer-events-none" />
+            {/* Auto-scrolling Marquee with Hover Pause */}
+            <div
+                className="relative overflow-hidden"
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+            >
+                {/* Gradient Masks - Enhanced */}
+                <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-zinc-50 via-zinc-50/80 dark:from-zinc-950 dark:via-zinc-950/80 to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-zinc-50 via-zinc-50/80 dark:from-zinc-950 dark:via-zinc-950/80 to-transparent z-10 pointer-events-none" />
 
                 {/* Scrolling Track */}
                 <motion.div
@@ -212,6 +207,11 @@ export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
                             ease: "linear"
                         }
                     }}
+                    style={{
+                        animationPlayState: isPaused ? 'paused' : 'running'
+                    }}
+                    // Framer Motion pause control
+                    {...(isPaused && { animate: undefined })}
                 >
                     {duplicatedReviews.map((review, idx) => (
                         <ReviewCard key={`${review.id}-${idx}`} review={review} lang={lang} />
@@ -219,16 +219,11 @@ export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
                 </motion.div>
             </div>
 
-            {/* Social Proof Stats */}
-            <div className="flex items-center justify-center gap-6 mt-8 pt-6 border-t border-zinc-200/50 dark:border-white/5">
+            {/* Social Proof Stats - Simplified */}
+            <div className="flex items-center justify-center gap-8 mt-8 pt-6 border-t border-zinc-200/50 dark:border-white/5">
                 <div className="text-center">
-                    <p className="text-2xl font-bold text-zinc-900 dark:text-white">2,847</p>
+                    <p className="text-2xl font-bold text-zinc-900 dark:text-white">{imagesFixed.toLocaleString()}</p>
                     <p className="text-xs text-zinc-500">{lang === 'en' ? 'Images Fixed' : '图片已修复'}</p>
-                </div>
-                <div className="w-px h-8 bg-zinc-200 dark:bg-zinc-700"></div>
-                <div className="text-center">
-                    <p className="text-2xl font-bold text-zinc-900 dark:text-white">4.9</p>
-                    <p className="text-xs text-zinc-500">{lang === 'en' ? 'Avg Rating' : '平均评分'}</p>
                 </div>
                 <div className="w-px h-8 bg-zinc-200 dark:bg-zinc-700"></div>
                 <div className="text-center">
