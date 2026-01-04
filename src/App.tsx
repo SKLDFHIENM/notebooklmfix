@@ -32,6 +32,8 @@ import { AmbientBackground } from './components/ui/AmbientBackground';
 import { ProcessedPage } from './types';
 import png4 from './assets/png4.png';
 import png5 from './assets/png5.png';
+import png4Thumb from './assets/png4-thumb.png';
+import png5Thumb from './assets/png5-thumb.png';
 import { autoPruneArchives } from './db/archive';
 
 // ================= Dictionary =================
@@ -389,7 +391,14 @@ const App: React.FC = () => {
                   <div className="absolute top-4 left-4 bg-black/60 text-white/90 text-[10px] font-bold px-3 py-1.5 rounded-full backdrop-blur-md z-20 border border-white/10 shadow-lg tracking-wide uppercase">
                     {lang === 'en' ? 'Original' : '修复前'}
                   </div>
-                  <img src={png4} alt="Original" className="w-full h-full object-cover opacity-60 hover:opacity-80 hover:scale-105 transition-all duration-700" />
+                  <img
+                    src={png4Thumb}
+                    data-full={png4}
+                    alt="Original"
+                    className="w-full h-full object-cover opacity-60 hover:opacity-80 hover:scale-105 transition-all duration-700"
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </div>
 
                 <ArrowRight className="w-5 h-5 text-zinc-300/50 dark:text-zinc-700 p-0.5 border border-zinc-300/30 dark:border-white/10 rounded-full rotate-90 md:rotate-0" />
@@ -402,7 +411,14 @@ const App: React.FC = () => {
                   <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur text-white/90 text-[9px] font-mono px-2 py-1 rounded border border-white/10">
                     4K Ultra HD
                   </div>
-                  <img src={png5} alt="Restored" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                  <img
+                    src={png5Thumb}
+                    data-full={png5}
+                    alt="Restored"
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                    loading="lazy"
+                    decoding="async"
+                  />
 
                   {/* Sheen Effect */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/0 via-indigo-500/10 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>

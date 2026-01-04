@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Quote } from 'lucide-react';
+import { Crown } from 'lucide-react';
 
 interface TestimonialProps {
     lang: 'en' | 'cn';
@@ -139,12 +139,22 @@ const ReviewCard: React.FC<{ review: Review; lang: 'en' | 'cn' }> = ({ review, l
     </div>
 );
 
-export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
-    const [isPaused, setIsPaused] = useState(false);
-    const [imagesFixed, setImagesFixed] = useState(2849);
+// CSS for infinite scroll animation
+const marqueeStyles = `
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+    animation: marquee 60s linear infinite;
+}
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
+`;
 
-    // 复制数组以实现无缝循环
-    const duplicatedReviews = [...REVIEWS, ...REVIEWS];
+export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
+    const [imagesFixed, setImagesFixed] = useState(2849);
 
     // 获取真实统计数据
     useEffect(() => {
@@ -160,6 +170,9 @@ export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
             });
     }, []);
 
+    // 复制数组实现无缝循环
+    const duplicatedReviews = [...REVIEWS, ...REVIEWS];
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -168,58 +181,40 @@ export const Testimonial: React.FC<TestimonialProps> = ({ lang }) => {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="w-full"
         >
+            {/* Inject CSS */}
+            <style>{marqueeStyles}</style>
+
             {/* Section Header */}
             <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 rounded-full mb-4">
-                    <Quote className="w-4 h-4 text-indigo-500" />
-                    <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                        {lang === 'en' ? 'Loved by thousands' : '用户评价'}
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-500/10 rounded-full mb-4">
+                    <Crown className="w-4 h-4 text-amber-500" />
+                    <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
+                        {lang === 'en' ? 'User Reviews' : '用户评价'}
                     </span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-heading font-bold text-zinc-900 dark:text-white mb-2">
                     {lang === 'en' ? 'What Our Users Say' : '听听他们怎么说'}
                 </h3>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                    {lang === 'en' ? 'Join 2000+ users who fixed their NotebookLM exports' : '已有 2000+ 用户成功修复了他们的导出图片'}
+                    {lang === 'en' ? 'Join 100+ users who fixed their NotebookLM exports' : '已有 100+ 用户成功修复了他们的导出图片'}
                 </p>
             </div>
 
-            {/* Auto-scrolling Marquee with Hover Pause */}
-            <div
-                className="relative overflow-hidden"
-                onMouseEnter={() => setIsPaused(true)}
-                onMouseLeave={() => setIsPaused(false)}
-            >
-                {/* Gradient Masks - Enhanced */}
-                <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-zinc-50 via-zinc-50/80 dark:from-zinc-950 dark:via-zinc-950/80 to-transparent z-10 pointer-events-none" />
-                <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-zinc-50 via-zinc-50/80 dark:from-zinc-950 dark:via-zinc-950/80 to-transparent z-10 pointer-events-none" />
+            {/* Infinite Marquee - Pure CSS */}
+            <div className="relative overflow-hidden">
+                {/* Gradient Masks - Stronger */}
+                <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-zinc-50 via-zinc-50/90 dark:from-zinc-950 dark:via-zinc-950/90 to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-zinc-50 via-zinc-50/90 dark:from-zinc-950 dark:via-zinc-950/90 to-transparent z-10 pointer-events-none" />
 
-                {/* Scrolling Track */}
-                <motion.div
-                    className="flex gap-5 py-2"
-                    animate={{
-                        x: [0, -((300 + 20) * REVIEWS.length)]
-                    }}
-                    transition={{
-                        x: {
-                            duration: 40,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }
-                    }}
-                    style={{
-                        animationPlayState: isPaused ? 'paused' : 'running'
-                    }}
-                    // Framer Motion pause control
-                    {...(isPaused && { animate: undefined })}
-                >
+                {/* Scrolling Track - CSS Animation */}
+                <div className="flex gap-5 py-2 animate-marquee" style={{ width: 'max-content' }}>
                     {duplicatedReviews.map((review, idx) => (
                         <ReviewCard key={`${review.id}-${idx}`} review={review} lang={lang} />
                     ))}
-                </motion.div>
+                </div>
             </div>
 
-            {/* Social Proof Stats - Simplified */}
+            {/* Social Proof Stats */}
             <div className="flex items-center justify-center gap-8 mt-8 pt-6 border-t border-zinc-200/50 dark:border-white/5">
                 <div className="text-center">
                     <p className="text-2xl font-bold text-zinc-900 dark:text-white">{imagesFixed.toLocaleString()}</p>
