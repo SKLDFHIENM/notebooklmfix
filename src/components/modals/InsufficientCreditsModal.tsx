@@ -93,7 +93,7 @@ export const InsufficientCreditsModal: React.FC<InsufficientCreditsModalProps> =
                         </div>
 
                         {/* QR Code */}
-                        <div className="w-32 h-32 bg-white p-2 rounded-lg shadow-sm mb-3">
+                        <div className="w-48 h-48 bg-white p-2 rounded-lg shadow-sm mb-3">
                             <img
                                 src={wechatQr}
                                 alt="WeChat QR"

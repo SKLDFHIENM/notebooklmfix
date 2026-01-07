@@ -122,7 +122,7 @@ export const UpdateAnnouncementModal: React.FC<UpdateAnnouncementModalProps> = (
 
                         {/* Contact Card */}
                         <div className="bg-indigo-50/50 dark:bg-indigo-500/10 rounded-xl p-3 border border-indigo-100 dark:border-indigo-500/20 flex flex-col items-center justify-center text-center">
-                            <img src={wechatQr} alt="QR" className="w-16 h-16 object-contain mb-2 bg-white rounded-lg p-1" />
+                            <img src={wechatQr} alt="QR" className="w-24 h-24 object-contain mb-2 bg-white rounded-lg p-1" />
                             <code className="text-[10px] px-1.5 py-0.5 bg-white/50 dark:bg-black/20 rounded text-indigo-800 dark:text-indigo-200 font-mono">
                                 {t.wechatId}
                             </code>
