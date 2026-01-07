@@ -54,12 +54,12 @@ export const Header: React.FC<HeaderProps> = ({
         // @ts-ignore - 'migratedFrom' will be added to API response
         if (quota && quota.migratedFrom !== undefined) {
             // Check if we already showed it (optional, but good for UX to not spam)
-            const hasSeen = localStorage.getItem('migration_notice_seen');
+            const hasSeen = localStorage.getItem('migration_notice_seen_v2');
             if (!hasSeen) {
                 // @ts-ignore
                 setMigratedFrom(quota.migratedFrom);
                 setShowMigrationNotice(true);
-                localStorage.setItem('migration_notice_seen', 'true');
+                localStorage.setItem('migration_notice_seen_v2', 'true');
             }
         }
     }, [quota]);

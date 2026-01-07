@@ -18,22 +18,52 @@ export const MigrationNotice: React.FC<MigrationNoticeProps> = ({
 }) => {
     const [isVisible, setIsVisible] = useState(false);
 
+    // Animation State
+    const [displayedCredits, setDisplayedCredits] = useState(migratedFrom || 0);
+
     useEffect(() => {
         if (show) {
-            // Small delay for animation
-            const timer = setTimeout(() => setIsVisible(true), 1500);
+            // 1. Show modal slightly faster
+            const timer = setTimeout(() => setIsVisible(true), 500);
+
+            // 2. Start Rolling Animation
+            if (migratedFrom !== null && currentCredits !== null && currentCredits > migratedFrom) {
+                const start = migratedFrom;
+                const end = currentCredits;
+                const duration = 1500; // 1.5s animation
+                const startTime = performance.now();
+
+                const animate = (currentTime: number) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+
+                    // Ease out quart
+                    const ease = 1 - Math.pow(1 - progress, 4);
+
+                    const current = Math.floor(start + (end - start) * ease);
+                    setDisplayedCredits(current);
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                };
+
+                // Start animation after modal appears
+                setTimeout(() => requestAnimationFrame(animate), 800);
+            }
+
             return () => clearTimeout(timer);
         } else {
             setIsVisible(false);
         }
-    }, [show]);
+    }, [show, migratedFrom, currentCredits]);
 
     if (!show || !isVisible) return null;
 
     const isUpgrade = migratedFrom !== null && currentCredits !== null && migratedFrom > 0;
 
     return (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-lg px-4 animate-in slide-in-from-top-4 duration-700 ease-out pointer-events-auto">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] w-full max-w-lg px-4 animate-in slide-in-from-top-4 duration-700 ease-out pointer-events-auto">
             <div className={`relative overflow-hidden rounded-2xl shadow-2xl border backdrop-blur-md p-0.5 ${isUpgrade
                 ? 'bg-gradient-to-r from-amber-500/50 via-purple-500/50 to-indigo-500/50 border-white/20'
                 : 'bg-zinc-900/90 dark:bg-zinc-800/90 border-zinc-700/50'
@@ -66,7 +96,9 @@ export const MigrationNotice: React.FC<MigrationNoticeProps> = ({
                                     <div className="text-zinc-600">→</div>
                                     <div className="flex flex-col">
                                         <span className="text-[10px] text-amber-500 uppercase font-bold">New</span>
-                                        <span className="text-amber-400 font-bold text-base">{currentCredits} Credits</span>
+                                        <span className={`text-amber-400 font-bold text-base tabular-nums ${displayedCredits < (currentCredits || 0) ? 'animate-pulse' : ''}`}>
+                                            {displayedCredits} Credits
+                                        </span>
                                     </div>
                                 </div>
                                 <p className="text-[10px] text-zinc-500">
