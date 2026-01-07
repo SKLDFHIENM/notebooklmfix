@@ -91,8 +91,8 @@ If you are a developer and want to run or modify the code locally:
  
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/JaffryGao/notebooklm-fixer.git
-cd notebooklm-fixer
+git clone https://github.com/JaffryGao/notebooklmfix.git
+cd notebooklmfix
 npm install
 npm run dev
 ```

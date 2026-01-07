@@ -94,8 +94,8 @@
  
 ### 1. 克隆与安装
 ```bash
-git clone https://github.com/JaffryGao/notebooklm-fixer.git
-cd notebooklm-fixer
+git clone https://github.com/JaffryGao/notebooklmfix.git
+cd notebooklmfix
 npm install
 npm run dev
 ```
