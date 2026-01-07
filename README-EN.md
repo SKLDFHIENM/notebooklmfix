@@ -80,8 +80,8 @@ No installation required, simply click the link below to get started:
  
 ### 🔑 Configure API Key
 On your first visit, click the **"Select API Key"** button in the top right corner:
-1. **Option A (Own Key)**: Enter your Google Gemini API Key (Requires VPN, supports 2K).
-2. **Option B (Access Code)**: Enter Access Code (**Ready to use**, Direct connection, supports 4K). High API costs covered by the author, paid access required. Contact WeChat: **JaffryD**
+1. **Option A (Own Key)**: Enter your Google Gemini API Key (supports 2K).
+2. **Option B (Access Code)**: Enter Access Code (**Ready to use**, supports 2K/4K). High API costs covered by the author, paid access required. Contact WeChat: **JaffryD**
 > **Privacy Promise**: Your Key is stored locally in your browser (LocalStorage) and is never uploaded to any server.
  
 ---
