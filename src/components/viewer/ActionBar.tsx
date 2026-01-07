@@ -103,7 +103,7 @@ export const ActionBar: React.FC<ActionBarProps> = ({
                                 : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                                 }`}
                         >
-                            {t.res2k}
+                            {authMode === 'key' ? "2K" : t.res2k}
                         </button>
                         <div className="w-px h-4 bg-zinc-200 dark:bg-white/10 mx-1"></div>
                         <button
@@ -122,7 +122,7 @@ export const ActionBar: React.FC<ActionBarProps> = ({
                                     : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                                 }`}
                         >
-                            {t.res4k}
+                            {authMode === 'key' ? "4K" : t.res4k}
                             {resolution === '4K' && authMode !== 'key' && <Zap className="w-3 h-3 fill-current animate-pulse" />}
                             {authMode === 'key' && <Lock className="w-3 h-3 opacity-50" />}
 
