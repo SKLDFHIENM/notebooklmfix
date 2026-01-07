@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, AlertCircle, MessageCircle } from 'lucide-react';
-import wechatQr from '../../assets/wechat.png'; // Make sure this path is correct
+import wechatQr from '../../assets/wechat.png';
 
 interface InsufficientCreditsModalProps {
     isOpen: boolean;
@@ -25,7 +25,7 @@ export const InsufficientCreditsModal: React.FC<InsufficientCreditsModalProps> =
         current: lang === 'en' ? 'Current Balance' : '当前余额',
         cost: lang === 'en' ? 'Required' : '本次消耗',
         contactTitle: lang === 'en' ? 'Get More Credits' : '获取更多积分',
-        contactDesc: lang === 'en' ? 'Scan to contact author for top-up' : '扫码联系作者进行充值',
+        contactDesc: lang === 'en' ? 'Scan to get credits' : '扫码联系作者获取',
         wechatId: 'WeChat: JaffryD'
     };
 
@@ -37,11 +37,8 @@ export const InsufficientCreditsModal: React.FC<InsufficientCreditsModalProps> =
                 onClick={onClose}
             />
 
-            {/* Modal Content */}
+            {/* Modal Content - Removed Gradient Bar */}
             <div className="relative w-full max-w-sm bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-200 dark:border-white/10 overflow-hidden transform transition-all scale-100 animate-in zoom-in-95 duration-300">
-
-                {/* Header Decoration */}
-                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 via-amber-500 to-red-500"></div>
 
                 <button
                     onClick={onClose}
@@ -52,8 +49,8 @@ export const InsufficientCreditsModal: React.FC<InsufficientCreditsModalProps> =
 
                 <div className="p-6 pt-8 flex flex-col items-center text-center">
 
-                    {/* Icon */}
-                    <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/10 flex items-center justify-center mb-4 text-red-500 dark:text-red-400 border border-red-200 dark:border-red-500/20 shadow-sm animate-bounce">
+                    {/* Icon - Removed Bounce */}
+                    <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/10 flex items-center justify-center mb-4 text-red-500 dark:text-red-400 border border-red-200 dark:border-red-500/20 shadow-sm">
                         <AlertCircle className="w-6 h-6" />
                     </div>
 
@@ -65,7 +62,7 @@ export const InsufficientCreditsModal: React.FC<InsufficientCreditsModalProps> =
                     </p>
 
                     {/* Stats Grid */}
-                    <div className="w-full grid grid-cols-2 gap-3 mb-8">
+                    <div className="w-full grid grid-cols-2 gap-3 mb-6">
                         <div className="flex flex-col items-center p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-white/5">
                             <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold mb-1">{t.current}</span>
                             <span className="text-2xl font-mono font-bold text-red-500 dark:text-red-400 tabular-nums">
@@ -77,6 +74,14 @@ export const InsufficientCreditsModal: React.FC<InsufficientCreditsModalProps> =
                             <span className="text-2xl font-mono font-bold text-zinc-700 dark:text-zinc-300 tabular-nums">
                                 {cost}
                             </span>
+                        </div>
+                    </div>
+
+                    {/* Pricing Info Card - Added */}
+                    <div className="w-full text-left bg-amber-50/50 dark:bg-amber-500/10 rounded-xl p-3 border border-amber-100 dark:border-amber-500/20 mb-4">
+                        <div className="space-y-2 text-xs text-amber-900 dark:text-amber-100 leading-relaxed font-medium">
+                            <p>🎉 首次购买：10 元 / 40 积分<br /><span className="opacity-70 text-[10px] pl-4">（最多可升级 40 张图）</span></p>
+                            <p className="pt-1 border-t border-amber-500/10 dark:border-amber-500/20">🎉 之后恢复：20 元 / 40 积分<br /><span className="opacity-70 text-[10px] pl-4">（最多可升级 40 张图）</span></p>
                         </div>
                     </div>
 

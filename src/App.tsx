@@ -27,6 +27,7 @@ import { ApiKeyModal } from './components/modals/ApiKeyModal';
 import { ArchiveModal } from './components/modals/ArchiveModal';
 import { LegalModal } from './components/modals/LegalModal';
 import { InsufficientCreditsModal } from './components/modals/InsufficientCreditsModal';
+import { UpdateAnnouncementModal } from './components/modals/UpdateAnnouncementModal';
 import { AmbientBackground } from './components/ui/AmbientBackground';
 
 // Types & Assets
@@ -297,6 +298,8 @@ const App: React.FC = () => {
         id="pdf-upload-global"
         disabled={isParsing}
       />
+
+      <UpdateAnnouncementModal lang={lang} />
 
       <AmbientBackground />
 
