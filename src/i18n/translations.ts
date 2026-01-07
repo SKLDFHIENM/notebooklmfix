@@ -94,9 +94,9 @@ export const TRANSLATIONS: Record<Language, TranslationKeys> = {
         keyGuideTitle: "API Key Required",
         keyGuideDesc: "To process high-resolution images with Nano Banana Pro, you must select a Google Cloud project associated with billing.",
         connectBtn: "Connect API Key",
-        res2k: "2K",
-        res4k: "4K",
-        highCost: "Uses more tokens",
+        res2k: "2K (1 Credit)",
+        res4k: "4K (2 Credits)",
+        highCost: "Cost: 2 Credits",
         enhancingTo: "AI Repairing",
         selectAll: "Select All",
         deselectAll: "Deselect All",
@@ -129,7 +129,7 @@ export const TRANSLATIONS: Record<Language, TranslationKeys> = {
         passcodeDesc2: '* Unlocks 4K Ultra',
         contactMe: 'Contact to buy:',
         wechat: '微信',
-        tip: '* For 4K Upscaling & Text Repair, please purchase a Passcode from the author.',
+        tip: '* 4K Upscaling consumes 2 Credits.',
 
         // Footer
         copyright: "© 2026 NotebookLM Fixer.",
@@ -138,7 +138,7 @@ export const TRANSLATIONS: Record<Language, TranslationKeys> = {
         privacy: "Privacy Policy",
         terms: "Terms of Service",
         disclaimerTitle: "Disclaimer & Policy",
-        disclaimerText: "AI restoration involves redrawing and is not 100% perfect. Extremely small or blurry text in the original image may not be fully restored. Policy: Quota is deducted upon success; failed attempts are automatically refunded."
+        disclaimerText: "AI restoration uses a credit system. 2K restoration uses 1 Credit, 4K uses 2 Credits. Quota is deducted upon success; failed attempts are automatically refunded."
     },
     cn: {
         // App
@@ -163,9 +163,9 @@ export const TRANSLATIONS: Record<Language, TranslationKeys> = {
         keyGuideTitle: "需配置 API 密钥",
         keyGuideDesc: "为了使用 Nano Banana Pro 处理高分辨率图像，您需要选择一个关联了计费的 Google Cloud 项目。",
         connectBtn: "连接 API 密钥",
-        res2k: "2K (快速)",
-        res4k: "4K (极致)",
-        highCost: "消耗更多 Token",
+        res2k: "2K (1积分)",
+        res4k: "4K (2积分)",
+        highCost: "消耗 2 积分",
         enhancingTo: "AI 正在修复",
         selectAll: "全选",
         deselectAll: "取消全选",
@@ -198,7 +198,7 @@ export const TRANSLATIONS: Record<Language, TranslationKeys> = {
         passcodeDesc2: '* 解锁极致 4K',
         contactMe: '联系购买:',
         wechat: '微信',
-        tip: '* 4K 高清修复以及文字修复，请联系作者购买口令。',
+        tip: '* 4K Upscaling & Text Repair consumes 2 Credits.',
 
         // Footer
         copyright: "© 2026 NotebookLM Fixer.",
@@ -207,6 +207,6 @@ export const TRANSLATIONS: Record<Language, TranslationKeys> = {
         privacy: "隐私政策",
         terms: "服务条款",
         disclaimerTitle: "免责声明 & 计费规则",
-        disclaimerText: "AI 修复并非 100% 完美，对于原图中极小或极其模糊的文字，可能存在修复失败的情况，请予以理解。规则：修复成功扣费；若修复失败，额度会自动回退。"
+        disclaimerText: "AI 修复并非 100% 完美，对于原图中极小或极其模糊的文字，可能存在修复失败的情况，请予以理解。计费规则：2K修复消耗1积分，4K修复消耗2积分。修复成功扣费，失败自动退回。"
     }
 };

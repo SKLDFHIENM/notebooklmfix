@@ -23,11 +23,40 @@ export default async function handler(req) {
             return new Response(JSON.stringify({ valid: false, error: "Invalid Access Code" }), { status: 200 });
         }
 
-        // Handle potential string to number conversion from Redis Hash
+        // Check for migration (Times -> Credits)
+        let isMigrated = false;
+        let migratedFrom = null;
+
+        if (data.credits === undefined) {
+            // Old schema: migrate to credits (x2)
+            const oldRemaining = parseInt(data.remaining || 0);
+            const oldTotal = parseInt(data.total || 0);
+
+            const newCredits = oldRemaining * 2;
+            const newTotalCredits = oldTotal * 2;
+
+            // Update KV with new schema
+            await kv.hset(key, {
+                credits: newCredits,
+                totalCredits: newTotalCredits,
+                remaining: newCredits, // Keep legacy field synced for safety
+                total: newTotalCredits, // Keep legacy field synced for safety
+                migrated: 'true'
+            });
+
+            // Update local data variable to reflect new state
+            data.credits = newCredits;
+            data.totalCredits = newTotalCredits;
+
+            isMigrated = true;
+            migratedFrom = oldRemaining;
+        }
+
         const quotaInfo = {
-            total: parseInt(data.total),
-            remaining: parseInt(data.remaining),
-            valid: data.valid
+            total: parseInt(data.totalCredits || data.total),
+            remaining: parseInt(data.credits || data.remaining),
+            valid: data.valid,
+            migratedFrom: isMigrated ? migratedFrom : undefined
         };
 
         if (quotaInfo.remaining <= 0) {

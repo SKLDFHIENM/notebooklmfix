@@ -99,7 +99,7 @@ export const ActionBar: React.FC<ActionBarProps> = ({
                         <button
                             onClick={() => setResolution('2K')}
                             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${resolution === '2K'
-                                ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-white'
+                                ? 'bg-indigo-500 text-white shadow-sm shadow-indigo-500/30'
                                 : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                                 }`}
                         >

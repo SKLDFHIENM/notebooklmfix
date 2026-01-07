@@ -20,13 +20,20 @@
 
 ## ✨ Core Features
 
+> **🎉 v2.3.0 Credit System Update**
+> - **Unified Credit System**: Transitioned from "usage count" to a flexible "Credit" system.
+>   - **2K Standard**: Consumes **1 Credit**.
+>   - **4K Ultra**: Consumes **2 Credits**.
+> - **Seamless Migration**: No action needed for existing users. Your remaining quota will be automatically doubled (**x2**) and converted to credits upon your first visit (e.g., 10 Times -> 20 Credits).
+> - **Rolling UI**: Added smooth rolling number animations and service upgrade notifications.
+>
 > **🚀 v2.2.3 Prompt Refined**
 > - **Enhanced Text Accuracy**: Underlying prompts have been optimized to use context (paragraphs, sentences) to infer blurred text, significantly reducing hallucinations and typos.
 > - **Stricter Layout Control**: Strengthened constraints on "composition, color distribution, and UI layout" to ensure the restored image is visually consistent with the original, preventing structural restructuring.
 >
 > **🚀 New in v2.2.2 (UX Polish)**
 > - **Quota Safe Mode**:
->   - **Smart Alerts**: Dual feedback via **Toast** & **Tooltip** when errors occur, explicitly confirming "No Quota Deducted".
+>   - **Smart Alerts**: Dual feedback via **Toast** & **Tooltip** when errors occur, explicitly confirming "No Credits Deducted".
 >   - **Safe Fail**: Network errors are automatically intercepted to protect your collected credits.
 > - **Auto 4K**: "Access Code Mode" now automatically locks resolution to **4K Ultra**, ensuring the best experience by default.
 > - **Disclaimer Restored**: A prominent new Disclaimer section added to the footer to clarify service rules and billing logic.
@@ -37,7 +44,7 @@
 >
 > **🚀 New in v2.2**
 > - **📦 Local Archive Box**: Automatically saves your generated high-res original images. Your history is preserved even after refreshing the page. Data is stored locally for privacy and security.
-> - **⚡️ Passcode Count Real-time Sync**: Fixed the issue where usage count updates were delayed in Passcode mode. Refreshing the page now syncs the latest count instantly.
+> - **⚡️ Passcode Credit Real-time Sync**: Fixed the issue where balance updates were delayed in Passcode mode. Refreshing the page now syncs the latest balance instantly.
 >
 > **🔥 New in v2.1**
 > - **Image Mode**: Support uploading single or multiple images (PNG/JPG/WEBP), not just PDFs.
@@ -122,8 +129,8 @@ Built with modern Web technologies:
 
 1.  **AI Limitations**: This tool uses Generative AI (GenAI) for image upscaling and restoration. While generally effective, it is **not 100% perfect**. For original text that is **extremely small, blurry, or illegible**, the AI may fail to recognize it or produce "hallucinations" (incorrect guesses). Please understand these technical limitations.
 2.  **Quota & Refund**:
-    *   **Deduction**: Quota is deducted only when a page is **successfully restored**.
-    *   **Refund**: If restoration fails due to network, AI errors, or server faults, the system will **automatically roll back** the count. Your quota will **not be consumed** for failed attempts.
+    *   **Deduction**: Credits are deducted only when a page is **successfully restored**.
+    *   **Refund**: If restoration fails due to network, AI errors, or server faults, the system will **automatically roll back**. Your credits will **not be consumed** for failed attempts.
 
 ## 🤝 Contributing
 

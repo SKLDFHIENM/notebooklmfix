@@ -29,7 +29,7 @@ const LEGAL_CONTENT = {
                     title: '2. 数据使用',
                     content: `• 您的图片数据仅用于通过 Google Gemini API 或我们的代理服务器进行 AI 增强处理。
 • 我们**不会**将您的数据用于训练模型、广告投放或任何其他商业目的。
-• 口令模式下，您的口令仅用于验证使用次数，不会关联任何个人身份信息。`
+• 口令模式下，您的口令仅用于验证积分消耗，不会关联任何个人身份信息。`
                 },
                 {
                     title: '3. 第三方服务',
@@ -74,9 +74,10 @@ const LEGAL_CONTENT = {
                 {
                     title: '3. 计费与退款',
                     content: `**口令模式计费规则**：
-• **成功扣费**：仅当图片修复成功并成功送达前端时扣除次数。
-• **自动退款**：若因网络问题、AI 报错或服务器故障导致修复失败，系统将**自动回滚**，不消耗您的次数。
-• **不退款情形**：因用户自身操作不当（如上传无效文件、中途刷新页面）导致的失败，已扣次数不予退还。
+• **积分制度**：2K极速版消耗 1 积分，4K极致版消耗 2 积分。
+• **成功扣费**：仅当图片修复成功并成功送达前端时扣除积分。
+• **自动退款**：若因网络问题、AI 报错或服务器故障导致修复失败，系统将**自动回滚**，不消耗您的积分。
+• **不退款情形**：因用户自身操作不当（如上传无效文件、中途刷新页面）导致的失败，已扣积分不予退还。
 
 **API Key 模式**：使用您自己的 API Key 时，Token 消耗由 Google 计费，与本服务无关。`
                 },
@@ -118,7 +119,7 @@ const LEGAL_CONTENT = {
                     title: '2. Data Usage',
                     content: `• Your image data is used solely for AI enhancement via the Google Gemini API or our proxy server.
 • We **do not** use your data for model training, advertising, or any other commercial purposes.
-• In Passcode mode, your passcode is only used to verify usage count and is not linked to any personal identity.`
+• In Passcode mode, your passcode is only used to verify credit consumption and is not linked to any personal identity.`
                 },
                 {
                     title: '3. Third-Party Services',
@@ -163,8 +164,9 @@ We recommend reviewing the privacy policies of these third-party services.`
                 {
                     title: '3. Billing & Refunds',
                     content: `**Passcode Mode Billing**:
-• **Deduction**: Quota is deducted only when image restoration succeeds and is successfully delivered to the frontend.
-• **Auto-Refund**: If restoration fails due to network issues, AI errors, or server faults, the system will **automatically rollback**. Your quota will not be consumed.
+• **Credit System**: 2K costs 1 Credit, 4K costs 2 Credits.
+• **Deduction**: Credits are deducted only when image restoration succeeds and is successfully delivered.
+• **Auto-Refund**: If restoration fails due to network issues, AI errors, or server faults, the system will **automatically rollback**. Your credits will not be consumed.
 • **Non-Refundable**: Failures due to user error (e.g., uploading invalid files, refreshing mid-process) are non-refundable.
 
 **API Key Mode**: When using your own API Key, token consumption is billed by Google and is unrelated to this Service.`
@@ -242,8 +244,8 @@ export const LegalModal: React.FC<LegalModalProps> = ({ isOpen, onClose, lang, i
                         <button
                             onClick={() => setActiveTab('privacy')}
                             className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === 'privacy'
-                                    ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm'
-                                    : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                                ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm'
+                                : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
                                 }`}
                         >
                             <ShieldCheck className="w-4 h-4" />
@@ -252,8 +254,8 @@ export const LegalModal: React.FC<LegalModalProps> = ({ isOpen, onClose, lang, i
                         <button
                             onClick={() => setActiveTab('terms')}
                             className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${activeTab === 'terms'
-                                    ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm'
-                                    : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                                ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm'
+                                : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
                                 }`}
                         >
                             <FileText className="w-4 h-4" />

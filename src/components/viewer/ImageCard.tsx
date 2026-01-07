@@ -95,15 +95,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                                 <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-tight">
                                     {lang === 'en' ? 'Wait for batch to finish, then retry.' : '请等待当前批次结束后重试。'}
                                 </p>
-                                {/* Retry Button - Improvement #2 */}
-                                {onRetry && !isProcessing && (
-                                    <button
-                                        onClick={(e) => { e.stopPropagation(); onRetry(index); }}
-                                        className="mt-1 w-full py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-medium rounded-lg transition-colors"
-                                    >
-                                        {lang === 'en' ? 'Retry' : '重试'}
-                                    </button>
-                                )}
+                                {/* Retry Button removed as per request */}
                             </div>
                             {/* Arrow */}
                             <div className="absolute -top-1 right-3 w-2 h-2 bg-zinc-900/95 dark:bg-zinc-800/95 border-t border-l border-white/10 rotate-45"></div>

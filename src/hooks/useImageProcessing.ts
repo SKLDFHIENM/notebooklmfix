@@ -24,6 +24,7 @@ const dataURLtoBlob = async (dataurl: string): Promise<Blob> => {
 export function useImageProcessing({
     pages,
     setPages,
+    quota, // Added missing prop
     setQuota,
     keyAuthorized,
     verifyKey,
@@ -58,7 +59,8 @@ export function useImageProcessing({
         setTimeout(() => setShowErrorToast(false), 4000);
     };
 
-    const startProcessing = async () => {
+    // Internal: Core processing loop that accepts an explicit page list
+    const processPagesList = async (currentPages: ProcessedPage[]) => {
         // 1. Auth Check
         if (!keyAuthorized) {
             const success = await verifyKey();
@@ -68,10 +70,20 @@ export function useImageProcessing({
             }
         }
 
-        // 2. Filter Processable Pages
-        const pagesToProcess = pages.filter(p => p.selected && !p.processedUrl);
+        // 2. Pre-flight Checks (Credit System)
+        if (authMode === 'passcode' && quota) {
+            const cost = resolution === '4K' ? 2 : 1;
+            // Use quota.remaining (which is mapped to credits in backend)
+            if (quota.remaining < cost) {
+                alert(`积分不足 (Insufficient Credits)\n当前余额: ${quota.remaining}\n本次消耗: ${cost}`);
+                return;
+            }
+        }
+
+        // 3. Filter Processable Pages
+        const pagesToProcess = currentPages.filter(p => p.selected && !p.processedUrl);
         if (pagesToProcess.length === 0) {
-            if (pages.some(p => !p.selected)) {
+            if (currentPages.some(p => !p.selected)) {
                 alert("No pages selected for processing.");
             }
             return;
@@ -85,7 +97,7 @@ export function useImageProcessing({
         abortRef.current = false;
 
         // Create a working copy
-        const newPages = [...pages];
+        const newPages = [...currentPages];
 
         for (let i = 0; i < newPages.length; i++) {
             // Skip if already processed OR NOT SELECTED
@@ -175,6 +187,11 @@ export function useImageProcessing({
         }
     };
 
+    // Public: Event Handler safe wrapper
+    const startProcessing = async () => {
+        await processPagesList(pages);
+    };
+
     const stopProcessing = () => {
         abortRef.current = true;
         setIsStopping(true);
@@ -184,18 +201,25 @@ export function useImageProcessing({
 
     // Improvement #2: Retry single failed page
     const retryPage = (index: number) => {
-        setPages(prev => {
-            const newPages = [...prev];
-            if (newPages[index] && newPages[index].status === 'error') {
-                newPages[index] = {
-                    ...newPages[index],
-                    status: 'pending',
-                    selected: true,
-                    processedUrl: undefined
-                };
-            }
-            return newPages;
-        });
+        // Create new pages state locally
+        const newPages = [...pages];
+        if (newPages[index] && newPages[index].status === 'error') {
+            newPages[index] = {
+                ...newPages[index],
+                status: 'pending', // Was error
+                selected: true,
+                processedUrl: undefined
+            };
+
+            // 1. Update UI
+            setPages(newPages);
+
+            // 2. Trigger processing immediately with the NEW state
+            // setTimeout to ensure state update doesn't conflict
+            setTimeout(() => {
+                processPagesList(newPages);
+            }, 0);
+        }
     };
 
     // Improvement #3: Computed stats for CompletionBanner

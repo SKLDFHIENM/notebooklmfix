@@ -28,23 +28,48 @@ export default async function handler(req, res) {
             return res.status(401).json({ error: "无效的激活码 (Invalid Access Code)" });
         }
 
-        const remaining = parseInt(quotaData.remaining);
+        // Check for migration (Times -> Credits)
+        if (quotaData.credits === undefined) {
+            const oldRemaining = parseInt(quotaData.remaining || 0);
+            const oldTotal = parseInt(quotaData.total || 0);
+            // Migration x2
+            const newCredits = oldRemaining * 2;
+            const newTotal = oldTotal * 2;
+
+            await kv.hset(key, {
+                credits: newCredits,
+                totalCredits: newTotal,
+                remaining: newCredits,
+                total: newTotal,
+                migrated: 'true'
+            });
+
+            // Update local
+            quotaData.credits = newCredits;
+            quotaData.totalCredits = newTotal;
+        }
+
+        const credits = parseInt(quotaData.credits || quotaData.remaining);
+        const cost = (imageSize === '4K') ? 2 : 1;
 
         // --- VALIDATION ONLY MODE ---
         if (validateOnly) {
             return res.status(200).json({
                 valid: true,
                 quota: {
-                    total: parseInt(quotaData.total),
-                    remaining: Math.max(0, remaining)
+                    total: parseInt(quotaData.totalCredits || quotaData.total),
+                    remaining: Math.max(0, credits)
                 }
             });
         }
 
-        if (remaining <= 0) {
+        if (credits < cost) {
             return res.status(403).json({
-                error: "配额已用尽 (Quota Exceeded)",
-                quota: { ...quotaData, remaining }
+                error: `积分不足 (Insufficient Credits). Needed: ${cost}, Have: ${credits}`,
+                quota: {
+                    total: parseInt(quotaData.totalCredits || quotaData.total),
+                    remaining: credits
+                }
             });
         }
 
@@ -87,7 +112,10 @@ export default async function handler(req, res) {
 
         let payload = {
             candidates,
-            quota: { ...quotaData, remaining } // Send OLD quota first
+            quota: {
+                total: parseInt(quotaData.totalCredits || quotaData.total),
+                remaining: credits // Send OLD quota first (pre-deduction)
+            }
         };
 
         // 6. Check Payload Size (Vercel Limit: 4.5MB)
@@ -109,7 +137,10 @@ export default async function handler(req, res) {
                 console.error("R2 Config Missing. Returning 413.");
                 return res.status(413).json({
                     error: "Image too large (Vercel Limit) and R2 not configured. Please use '2K'.",
-                    quota: { ...quotaData, remaining }
+                    quota: {
+                        total: parseInt(quotaData.totalCredits || quotaData.total),
+                        remaining: credits
+                    }
                 });
             }
 
@@ -153,24 +184,33 @@ export default async function handler(req, res) {
 
                 payload = {
                     candidates: lightCandidates,
-                    quota: { ...quotaData, remaining }
+                    quota: {
+                        total: parseInt(quotaData.totalCredits || quotaData.total),
+                        remaining: credits
+                    }
                 };
             } catch (r2Error) {
                 console.error("R2 Upload Failed:", r2Error);
                 return res.status(500).json({
                     error: "Image generated but failed to deliver (Upload Error). Quota refunded.",
-                    quota: { ...quotaData, remaining }
+                    quota: {
+                        total: parseInt(quotaData.totalCredits || quotaData.total),
+                        remaining: credits
+                    }
                 });
             }
         }
 
-        // 7. Deduct Quota (Atomic HINCRBY) - Only if safe to send
-        const newRemaining = await kv.hincrby(key, 'remaining', -1);
+        // 7. Deduct Quota (Atomic HINCRBY)
+        // Deduct logic: -cost
+        const newCredits = await kv.hincrby(key, 'credits', -cost);
+        // Also sync old legacy field just in case
+        await kv.hset(key, { remaining: newCredits });
 
         // Update payload with new quota
         payload.quota = {
-            total: parseInt(quotaData.total),
-            remaining: Math.max(0, newRemaining)
+            total: parseInt(quotaData.totalCredits || quotaData.total),
+            remaining: Math.max(0, newCredits)
         };
 
         return res.status(200).json(payload);
