@@ -58,7 +58,7 @@ export function useImageProcessing({
         setTimeout(() => setShowErrorToast(false), 4000);
     };
 
-    const startProcessing = async () => {
+    const startProcessing = async (pagesOverride?: ProcessedPage[]) => {
         // 1. Auth Check
         if (!keyAuthorized) {
             const success = await verifyKey();
@@ -68,10 +68,13 @@ export function useImageProcessing({
             }
         }
 
+        // Use provided pages or current state
+        const currentPages = pagesOverride || pages;
+
         // 2. Filter Processable Pages
-        const pagesToProcess = pages.filter(p => p.selected && !p.processedUrl);
+        const pagesToProcess = currentPages.filter(p => p.selected && !p.processedUrl);
         if (pagesToProcess.length === 0) {
-            if (pages.some(p => !p.selected)) {
+            if (currentPages.some(p => !p.selected)) {
                 alert("No pages selected for processing.");
             }
             return;
@@ -85,7 +88,7 @@ export function useImageProcessing({
         abortRef.current = false;
 
         // Create a working copy
-        const newPages = [...pages];
+        const newPages = [...currentPages];
 
         for (let i = 0; i < newPages.length; i++) {
             // Skip if already processed OR NOT SELECTED
@@ -184,18 +187,25 @@ export function useImageProcessing({
 
     // Improvement #2: Retry single failed page
     const retryPage = (index: number) => {
-        setPages(prev => {
-            const newPages = [...prev];
-            if (newPages[index] && newPages[index].status === 'error') {
-                newPages[index] = {
-                    ...newPages[index],
-                    status: 'pending',
-                    selected: true,
-                    processedUrl: undefined
-                };
-            }
-            return newPages;
-        });
+        // Create new pages state locally
+        const newPages = [...pages];
+        if (newPages[index] && newPages[index].status === 'error') {
+            newPages[index] = {
+                ...newPages[index],
+                status: 'pending', // Was error
+                selected: true,
+                processedUrl: undefined
+            };
+
+            // 1. Update UI
+            setPages(newPages);
+
+            // 2. Trigger processing immediately with the NEW state
+            // setTimeout to ensure state update doesn't conflict, though we pass explicit data
+            setTimeout(() => {
+                startProcessing(newPages);
+            }, 0);
+        }
     };
 
     // Improvement #3: Computed stats for CompletionBanner
