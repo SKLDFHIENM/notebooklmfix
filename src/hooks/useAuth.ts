@@ -95,6 +95,18 @@ export function useAuth() {
         return () => window.removeEventListener('storage', handleStorageChange);
     }, []); // Run once on mount
 
+    // Fix: Persist quota changes (e.g. after deduction) to cache immediately
+    // unlikely collision with storage event loop due to same-value check
+    useEffect(() => {
+        if (quota) {
+            const currentSaved = localStorage.getItem('gemini_quota_cache');
+            const newValue = JSON.stringify(quota);
+            if (currentSaved !== newValue) {
+                localStorage.setItem('gemini_quota_cache', newValue);
+            }
+        }
+    }, [quota]);
+
     return {
         keyAuthorized,
         authMode,
