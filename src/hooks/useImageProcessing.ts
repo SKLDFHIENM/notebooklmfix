@@ -44,6 +44,10 @@ export function useImageProcessing({
     const [showErrorToast, setShowErrorToast] = useState(false);
     const [errorToastMessage, setErrorToastMessage] = useState('');
 
+    // New Insufficient Credits Modal State
+    const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
+    const [insufficientCreditsInfo, setInsufficientCreditsInfo] = useState<{ current: number; cost: number } | null>(null);
+
     // Auto-switch to 4K for Passcode Mode
     useEffect(() => {
         if (authMode === 'passcode') {
@@ -57,6 +61,10 @@ export function useImageProcessing({
         setErrorToastMessage(msg);
         setShowErrorToast(true);
         setTimeout(() => setShowErrorToast(false), 4000);
+    };
+
+    const closeInsufficientCreditsModal = () => {
+        setShowInsufficientCreditsModal(false);
     };
 
     // Internal: Core processing loop that accepts an explicit page list
@@ -75,7 +83,9 @@ export function useImageProcessing({
             const cost = resolution === '4K' ? 2 : 1;
             // Use quota.remaining (which is mapped to credits in backend)
             if (quota.remaining < cost) {
-                alert(`积分不足 (Insufficient Credits)\n当前余额: ${quota.remaining}\n本次消耗: ${cost}`);
+                // Replaced native alert with Custom Modal logic
+                setInsufficientCreditsInfo({ current: quota.remaining, cost });
+                setShowInsufficientCreditsModal(true);
                 return;
             }
         }
@@ -121,7 +131,7 @@ export function useImageProcessing({
                     newPages[i].originalUrl,
                     newPages[i].width,
                     newPages[i].height,
-                    resolution
+                    newPages[i].resolution // Fix: Use the resolution stored on the page object or current state
                 );
 
                 newPages[i].processedUrl = result.image;
@@ -240,6 +250,10 @@ export function useImageProcessing({
         showStoppingToast,
         showErrorToast,
         errorToastMessage,
+        // Credits Modal Exports
+        showInsufficientCreditsModal,
+        insufficientCreditsInfo,
+        closeInsufficientCreditsModal,
         startProcessing,
         stopProcessing,
         retryPage,

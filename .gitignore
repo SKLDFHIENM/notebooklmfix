@@ -29,3 +29,4 @@ README-KV.md
 README-DEPLOY.md
 .vercel
 .env*.local
+ADMIN_COMMANDS.md

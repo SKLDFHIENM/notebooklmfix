@@ -26,6 +26,7 @@ import { ZoomModal } from './components/modals/ZoomModal';
 import { ApiKeyModal } from './components/modals/ApiKeyModal';
 import { ArchiveModal } from './components/modals/ArchiveModal';
 import { LegalModal } from './components/modals/LegalModal';
+import { InsufficientCreditsModal } from './components/modals/InsufficientCreditsModal';
 import { AmbientBackground } from './components/ui/AmbientBackground';
 
 // Types & Assets
@@ -81,7 +82,10 @@ const App: React.FC = () => {
     stopProcessing,
     retryPage,
     successCount,
-    failCount
+    failCount,
+    showInsufficientCreditsModal,
+    insufficientCreditsInfo,
+    closeInsufficientCreditsModal
   } = useImageProcessing({
     pages,
     setPages, // Passing setPages to allow updating status/url
@@ -550,6 +554,14 @@ const App: React.FC = () => {
           handleSaveLocalKey(key, newQuota);
           setIsKeyModalOpen(false);
         }}
+        lang={lang}
+      />
+
+      <InsufficientCreditsModal
+        isOpen={showInsufficientCreditsModal}
+        onClose={closeInsufficientCreditsModal}
+        currentCredits={insufficientCreditsInfo?.current || 0}
+        cost={insufficientCreditsInfo?.cost || 0}
         lang={lang}
       />
 
