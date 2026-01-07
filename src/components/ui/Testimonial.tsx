@@ -97,6 +97,15 @@ const REVIEWS: Review[] = [
         content: '给客户做方案再也不尴尬了',
         contentEn: 'No more embarrassing blurry images in client proposals.',
         platform: 'xiaohongshu'
+    },
+    {
+        id: 10,
+        name: '王**',
+        role: '解决方案设计师',
+        avatar: '💡',
+        content: '效果不错，你怎么可以弄的这么清晰的？太厉害了',
+        contentEn: 'The results are impressive! How did you get it so clear? Amazing work.',
+        platform: 'wechat'
     }
 ];
 
