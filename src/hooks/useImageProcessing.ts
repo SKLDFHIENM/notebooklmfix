@@ -140,8 +140,21 @@ export function useImageProcessing({
                 // --- Archive Logic ---
                 try {
                     const blob = await dataURLtoBlob(result.image);
+
+                    // Fix: Get ACTUAL dimensions of the generated image, not the original dimensions
+                    // This ensures 4K images are correctly tagged in the archive
+                    const getImageDimensions = (src: string): Promise<{ w: number; h: number }> => {
+                        return new Promise((resolve) => {
+                            const img = new Image();
+                            img.onload = () => resolve({ w: img.width, h: img.height });
+                            img.src = src;
+                        });
+                    };
+
+                    const { w: realWidth, h: realHeight } = await getImageDimensions(result.image);
+
                     // Use Page Index as name since we don't store filenames per page in ProcessedPage
-                    await saveToArchive(blob, newPages[i].width, newPages[i].height, `Page ${newPages[i].pageIndex + 1}`, newPages[i].originalUrl);
+                    await saveToArchive(blob, realWidth, realHeight, `Page ${newPages[i].pageIndex + 1}`, newPages[i].originalUrl);
                     // Trigger simple shake animation in Header
                     window.dispatchEvent(new Event('archive-saved'));
                 } catch (archiveErr) {
