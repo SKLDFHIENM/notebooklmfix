@@ -45,26 +45,6 @@
 > - **Auto 4K**: "Access Code Mode" now automatically locks resolution to **4K Ultra**, ensuring the best experience by default.
 > - **Disclaimer Restored**: A prominent new Disclaimer section added to the footer to clarify service rules and billing logic.
 >
-> **🚀 New in v2.2.1 (Hotfix)**
-> - **☁️ Cloudflare R2 Hybrid Integration**: Automatically detects oversized images and routes them via R2, bypassing Vercel's 4.5MB limit. 4K success rate boosted to 99.9%!
-> - **🛡️ Smart Quota Protection**: Prevents quota deduction if image generation fails.
->
-> **🚀 New in v2.2**
-> - **📦 Local Archive Box**: Automatically saves your generated high-res original images. Your history is preserved even after refreshing the page. Data is stored locally for privacy and security.
-> - **⚡️ Passcode Credit Real-time Sync**: Fixed the issue where balance updates were delayed in Passcode mode. Refreshing the page now syncs the latest balance instantly.
->
-> **🔥 New in v2.1**
-> - **Image Mode**: Support uploading single or multiple images (PNG/JPG/WEBP), not just PDFs.
-> - **On-Demand Processing**: Select specific pages to process to save quota.
-> - **Access Code**: v2.1 introduces the **Access Code** mode, supporting higher quality and simpler configuration compared to the traditional API Key mode. (High API costs covered by the author, paid access required. Contact WeChat: **JaffryD**)
->
-> | Feature | 🔑 Own API Key (Legacy) | 🎫 Access Code (New) |
-> | :--- | :--- | :--- |
-> | **Configuration** | High (Requires Google AI Studio account & Credit Card) | **Very Low (Ready to use, just enter code)** |
-> | **Max Quality** | 2K (Standard) Only | **Supports 4K (Ultra HD)** |
-> | **Network** | Requires VPN/Proxy | **Direct Connection (No VPN needed)** |
-> | **Target Audience** | Developers / Tech Savvy | **General Users / Quality Seekers** |
-
 - **🖼️ Intelligent HD Restoration**: Uses the **Nano Banana Pro** model to intelligently recognize and redraw document content, rather than just applying a filter.
 
 - **🔍 Pixel-level Repair**: Offers **2K (Standard)** and **4K (Extreme)** resolution options to meet different needs.
