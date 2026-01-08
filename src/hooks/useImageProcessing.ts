@@ -171,9 +171,11 @@ export function useImageProcessing({
                     setQuota(result.quota);
                 }
 
-            } catch (error) {
+            } catch (error: any) {
                 console.error(`Page ${i + 1} Error:`, error);
                 newPages[i].status = 'error';
+                // Capture specific error message for debugging
+                newPages[i].errorMessage = error?.message || 'Unknown error occurred';
 
                 // Trigger Toast only for the first error in a batch to avoid spam
                 if (!showErrorToast) {

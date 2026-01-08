@@ -86,16 +86,25 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                         </span>
 
                         {/* Premium Tooltip - Bug #2 Fixed: group-hover/error */}
-                        <div className="absolute top-full right-0 mt-2 w-max max-w-[220px] p-3 bg-zinc-900/95 dark:bg-zinc-800/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl origin-top-right transition-all duration-300 opacity-0 scale-95 translate-y-2 invisible group-hover/error:opacity-100 group-hover/error:scale-100 group-hover/error:translate-y-0 group-hover/error:visible z-50">
+                        <div className="absolute top-full right-0 mt-2 w-max max-w-[250px] p-3 bg-zinc-900/95 dark:bg-zinc-800/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-2xl origin-top-right transition-all duration-300 opacity-0 scale-95 translate-y-2 invisible group-hover/error:opacity-100 group-hover/error:scale-100 group-hover/error:translate-y-0 group-hover/error:visible z-50 pointer-events-none md:pointer-events-auto">
                             <div className="flex flex-col gap-2">
                                 <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">✓ Quota Safe</span>
-                                <p className="text-xs text-zinc-200 leading-relaxed font-medium">
-                                    {lang === 'en' ? 'No quota deducted for failures.' : '生成失败不扣除次数。'}
-                                </p>
+
+                                {page.errorMessage ? (
+                                    <div className="p-2 bg-red-500/10 rounded border border-red-500/20">
+                                        <p className="text-[10px] font-mono text-red-200 break-all leading-tight">
+                                            {page.errorMessage}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <p className="text-xs text-zinc-200 leading-relaxed font-medium">
+                                        {lang === 'en' ? 'No quota deducted for failures.' : '生成失败不扣除次数。'}
+                                    </p>
+                                )}
+
                                 <p className="text-[10px] text-zinc-500 dark:text-zinc-400 leading-tight">
                                     {lang === 'en' ? 'Wait for batch to finish, then retry.' : '请等待当前批次结束后重试。'}
                                 </p>
-                                {/* Retry Button removed as per request */}
                             </div>
                             {/* Arrow */}
                             <div className="absolute -top-1 right-3 w-2 h-2 bg-zinc-900/95 dark:bg-zinc-800/95 border-t border-l border-white/10 rotate-45"></div>

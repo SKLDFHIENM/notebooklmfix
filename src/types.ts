@@ -8,6 +8,7 @@ export interface ProcessedPage {
   height: number;
   aspectRatio: number; // width / height
   resolution?: '2K' | '4K'; // Track which resolution was used
+  errorMessage?: string; // Captured error details for debugging
   selected: boolean;
 }
 
