@@ -38,7 +38,7 @@ export const InsufficientCreditsModal: React.FC<InsufficientCreditsModalProps> =
             />
 
             {/* Modal Content - Removed Gradient Bar */}
-            <div className="relative w-full max-w-sm bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-200 dark:border-white/10 overflow-hidden transform transition-all scale-100 animate-in zoom-in-95 duration-300">
+            <div className="relative w-full max-w-sm bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-200 dark:border-white/10 overflow-hidden transform transition-all scale-100 animate-in zoom-in-95 duration-300 max-h-[85dvh] flex flex-col">
 
                 <button
                     onClick={onClose}
@@ -47,7 +47,7 @@ export const InsufficientCreditsModal: React.FC<InsufficientCreditsModalProps> =
                     <X className="w-5 h-5" />
                 </button>
 
-                <div className="p-6 pt-8 flex flex-col items-center text-center">
+                <div className="p-6 pt-8 flex flex-col items-center text-center overflow-y-auto">
 
                     {/* Icon - Removed Bounce */}
                     <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/10 flex items-center justify-center mb-4 text-red-500 dark:text-red-400 border border-red-200 dark:border-red-500/20 shadow-sm">

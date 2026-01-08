@@ -40,10 +40,8 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
     return (
         <div
             ref={containerRef}
-            className={`relative w-full overflow-hidden rounded-2xl cursor-crosshair select-none border border-zinc-200 dark:border-white/10 shadow-2xl bg-zinc-900 group touch-none`}
-            style={{
-                aspectRatio: aspectRatio === 'video' ? '16/9' : aspectRatio === 'square' ? '1/1' : '4/3'
-            }}
+            className={`relative w-full overflow-hidden rounded-2xl cursor-crosshair select-none border border-zinc-200 dark:border-white/10 shadow-2xl bg-zinc-900 group touch-none ${aspectRatio === 'video' ? 'aspect-square md:aspect-video' : aspectRatio === 'square' ? 'aspect-square' : 'aspect-[4/3]'
+                }`}
             onMouseMove={onMouseMove}
             onTouchMove={onTouchMove}
             onTouchStart={onTouchMove} // Jump to position on touch start

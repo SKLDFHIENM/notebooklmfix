@@ -110,8 +110,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                     {/* Subtle Darkening (much lighter than before) */}
                     <div className="absolute inset-0 bg-black/10 dark:bg-black/20 backdrop-blur-[1px]"></div>
 
-                    {/* Shimmer / Scanning Light Effect */}
-                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12"></div>
+                    {/* Shimmer / Scanning Light Effect - Reduced opacity on mobile for comfort */}
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 md:via-white/20 to-transparent skew-x-12"></div>
 
                     {/* Status Text (Minimalist) */}
                     <div className="absolute bottom-4 left-0 right-0 flex flex-col items-center justify-center gap-1">
@@ -143,8 +143,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                             decoding="async"
                             className="w-full h-full object-contain rounded-lg shadow-inner bg-white dark:bg-zinc-900"
                         />
-                        {/* Hover Prompt & Download */}
-                        <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-lg pointer-events-none">
+                        {/* Hover Prompt & Download (Desktop) */}
+                        <div className="hidden md:flex absolute inset-0 flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-lg pointer-events-none">
                             <div className="px-4 py-2 bg-black/80 backdrop-blur-md rounded-full text-xs text-white border border-white/10 shadow-xl flex items-center gap-2 mb-2">
                                 <Maximize2 className="w-3 h-3" />
                                 {t.clickToView}
@@ -178,6 +178,20 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             <div className="absolute bottom-2 left-2 text-[10px] font-mono-custom text-zinc-400 px-2 py-1 bg-white/50 dark:bg-black/50 backdrop-blur-sm rounded">
                 {t.page} {page.pageIndex + 1}
             </div>
+
+            {/* Mobile Download Button (Always Visible) */}
+            {page.processedUrl && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleDownloadSingleImage(page);
+                    }}
+                    className="md:hidden absolute bottom-2 right-2 p-2 bg-white/90 text-zinc-900 rounded-full shadow-lg border border-zinc-200 active:scale-95 transition-transform z-20"
+                    title="Download Image"
+                >
+                    <Download className="w-4 h-4" />
+                </button>
+            )}
         </div>
     );
 };

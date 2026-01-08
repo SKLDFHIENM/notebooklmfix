@@ -233,7 +233,7 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={handleSelectAll}
-                                    className="text-xs font-medium text-zinc-500 dark:text-zinc-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors px-2 py-1.5 rounded hover:bg-zinc-100 dark:hover:bg-white/5"
+                                    className="text-xs font-medium text-zinc-500 dark:text-zinc-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors px-2 py-1.5 rounded hover:bg-zinc-100 dark:hover:bg-white/5 whitespace-nowrap"
                                 >
                                     {lang === 'en'
                                         ? (selectedIds.length === filteredImages?.length ? 'Deselect All' : 'Select All')
@@ -245,13 +245,13 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
                                 </span>
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                                 {/* Delete Button with Micro-Interaction */}
                                 <button
                                     onClick={handleDelete}
                                     disabled={selectedIds.length === 0 || isDeleting}
                                     className={`
-                                        flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                                        flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap
                                         ${deleteConfirmMode
                                             ? 'bg-red-500 text-white hover:bg-red-600 shadow-md shadow-red-500/20'
                                             : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500 dark:hover:text-red-400'
@@ -262,7 +262,7 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
                                     <Trash2 className={`w-4 h-4 ${deleteConfirmMode ? 'animate-bounce' : ''}`} />
                                     <span>
                                         {deleteConfirmMode
-                                            ? (lang === 'en' ? 'Confirm Delete?' : '确认删除?')
+                                            ? (lang === 'en' ? 'Confirm?' : '确认删除?')
                                             : (lang === 'en' ? 'Delete' : '删除')
                                         }
                                     </span>
@@ -273,7 +273,7 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
                                     onClick={handleExportZip}
                                     disabled={selectedIds.length === 0}
                                     className={`
-                                        flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-bold text-white shadow-lg transition-all duration-200
+                                        flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-bold text-white shadow-lg transition-all duration-200 whitespace-nowrap
                                         ${selectedIds.length === 0
                                             ? 'bg-zinc-300 dark:bg-zinc-700 cursor-not-allowed shadow-none'
                                             : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/25 active:scale-95'
@@ -282,7 +282,7 @@ export const ArchiveModal: React.FC<ArchiveModalProps> = ({ isOpen, onClose, lan
                                 >
                                     <Download className="w-4 h-4" />
                                     <span>
-                                        {lang === 'en' ? 'Download ZIP' : '打包下载 ZIP'}
+                                        {lang === 'en' ? 'ZIP' : '下载ZIP'}
                                     </span>
                                 </button>
                             </div>

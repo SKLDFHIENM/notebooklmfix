@@ -20,6 +20,13 @@
 
 ## ✨ Core Features
 
+> **📱 v2.4.0 Mobile Experience Polish**
+> - **UI Adaptation & Fixes**:
+>   - **Slim Modals**: Significantly reduced margins for announcement and top-up modals on small screens, ensuring content is scrollable and not obstructed.
+>   - **Layout Fixes**: Resolved overlap issues between the bottom action bar and image checkboxes, and fixed the truncated archive tooltip on mobile.
+>   - **Overflow Protection**: "Completion Banner" buttons now hide text labels on mobile to prevent screen overflow. Archive box buttons are forced to single-line display.
+> - **Core Stability (OOM Fix)**: Refactored the mobile image viewer to a lightweight version (`<img>` + gesture library) and locked preview resolution to 2K by default to prevent browser crashes (OOM), while keeping 4K for downloads.
+>
 > **🎉 v2.3.0 Credit System Update**
 > - **Unified Credit System**: Transitioned from "usage count" to a flexible "Credit" system.
 >   - **2K Standard**: Consumes **1 Credit**.

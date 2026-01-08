@@ -39,7 +39,7 @@ export const ImageGrid: React.FC<ImageGridProps> = ({
         <div className="space-y-4">
             {/* Select All / Deselect All */}
             {!isProcessing && completedCount < pages.length && (
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     <button
                         onClick={selectAll}
                         className="px-3 py-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 rounded-lg border border-indigo-200 dark:border-indigo-500/30 transition-colors"

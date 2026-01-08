@@ -30,6 +30,7 @@ import { InsufficientCreditsModal } from './components/modals/InsufficientCredit
 import { UpdateAnnouncementModal } from './components/modals/UpdateAnnouncementModal';
 import { ComparisonSlider } from './components/ui/ComparisonSlider';
 import { AmbientBackground } from './components/ui/AmbientBackground';
+import { MobileActionBar } from './components/layout/MobileActionBar';
 
 // Types & Assets
 import { ProcessedPage } from './types';
@@ -142,14 +143,14 @@ const App: React.FC = () => {
   }, [lang]);
 
   // --- Helper Functions ---
-  const toggleTheme = (event: React.MouseEvent) => {
+  const toggleTheme = (event?: React.MouseEvent) => {
     // @ts-ignore
     if (!document.startViewTransition) {
       setTheme(prev => prev === 'dark' ? 'light' : 'dark');
       return;
     }
-    const x = event.clientX;
-    const y = event.clientY;
+    const x = event?.clientX ?? window.innerWidth / 2;
+    const y = event?.clientY ?? window.innerHeight / 2;
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
       Math.max(y, window.innerHeight - y)
@@ -398,7 +399,12 @@ const App: React.FC = () => {
                 aspectRatio="video" // Or "auto" depending on the image aspect ratio
               />
               <p className="text-center text-xs text-zinc-400 mt-4 animate-pulse">
-                {lang === 'en' ? 'Hover image to compare details' : '鼠标移动查看修复细节'}
+                <span className="md:hidden">
+                  {lang === 'en' ? 'Touch & Drag to compare' : '按住滑动查看细节'}
+                </span>
+                <span className="hidden md:inline">
+                  {lang === 'en' ? 'Hover image to compare details' : '鼠标移动查看修复细节'}
+                </span>
               </p>
             </div>
 
@@ -409,31 +415,64 @@ const App: React.FC = () => {
           </div>
         )}
 
-        <ActionBar
-          t={t}
-          lang={lang}
-          pages={pages}
-          completedCount={completedCount}
-          progress={progress}
-          isAllComplete={isAllComplete}
-          resolution={resolution}
-          setResolution={setResolution}
-          resolutionLocked={resolutionLocked}
-          authMode={authMode}
-          keyAuthorized={keyAuthorized}
-          setIsKeyModalOpen={setIsKeyModalOpen}
-          isProcessing={isProcessing}
-          isStopping={isStopping}
-          isStopped={isStopped}
-          startProcessing={startProcessing}
-          stopProcessing={stopProcessing}
-          handleExportPdf={doExportPdf}
-          isExportingPdf={isExportingPdf}
-          handleExportPptx={doExportPptx}
-          isExportingPptx={isExportingPptx}
-          handleDownloadZip={doDownloadZip}
-          uploadMode={uploadMode}
-        />
+        {/* Desktop Action Bar */}
+        <div className="hidden md:block">
+          <ActionBar
+            t={t}
+            lang={lang}
+            pages={pages}
+            completedCount={completedCount}
+            progress={progress}
+            isAllComplete={isAllComplete}
+            resolution={resolution}
+            setResolution={setResolution}
+            resolutionLocked={resolutionLocked}
+            authMode={authMode}
+            keyAuthorized={keyAuthorized}
+            setIsKeyModalOpen={setIsKeyModalOpen}
+            isProcessing={isProcessing}
+            isStopping={isStopping}
+            isStopped={isStopped}
+            startProcessing={startProcessing}
+            stopProcessing={stopProcessing}
+            handleExportPdf={doExportPdf}
+            isExportingPdf={isExportingPdf}
+            handleExportPptx={doExportPptx}
+            isExportingPptx={isExportingPptx}
+            handleDownloadZip={doDownloadZip}
+            uploadMode={uploadMode}
+          />
+        </div>
+
+        {/* Mobile Action Bar (Bottom Dock) */}
+        {/* Mobile Action Bar (Bottom Dock) - Hide when completion banner is shown to avoid overlap */}
+        {!showCompletionBanner && (
+          <MobileActionBar
+            t={t}
+            lang={lang}
+            pages={pages}
+            completedCount={completedCount}
+            progress={progress}
+            isAllComplete={isAllComplete}
+            resolution={resolution}
+            setResolution={setResolution}
+            resolutionLocked={resolutionLocked}
+            authMode={authMode}
+            keyAuthorized={keyAuthorized}
+            setIsKeyModalOpen={setIsKeyModalOpen}
+            isProcessing={isProcessing}
+            isStopping={isStopping}
+            isStopped={isStopped}
+            startProcessing={startProcessing}
+            stopProcessing={stopProcessing}
+            handleExportPdf={doExportPdf}
+            isExportingPdf={isExportingPdf}
+            handleExportPptx={doExportPptx}
+            isExportingPptx={isExportingPptx}
+            handleDownloadZip={doDownloadZip}
+            uploadMode={uploadMode}
+          />
+        )}
 
         <ImageGrid
           pages={pages}

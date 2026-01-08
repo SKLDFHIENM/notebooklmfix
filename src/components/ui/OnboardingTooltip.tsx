@@ -35,13 +35,13 @@ export const OnboardingTooltip: React.FC<OnboardingTooltipProps> = ({ lang }) =>
                     animate={{ opacity: 1, y: 0, scale: 1, x: "-50%" }}
                     exit={{ opacity: 0, scale: 0.9, x: "-50%" }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-[120%] left-1/2 z-[60] flex flex-col items-center pointer-events-auto"
+                    className="absolute top-[120%] z-[60] flex flex-col items-center pointer-events-auto md:left-1/2 left-auto right-[-80px] md:right-auto"
                 >
                     {/* Arrow - pointing up to the button center */}
-                    <div className="w-3 h-3 bg-zinc-900 border-l border-t border-white/10 transform rotate-45 -mb-1.5 z-10"></div>
+                    <div className="w-3 h-3 bg-zinc-900 border-l border-t border-white/10 transform rotate-45 -mb-1.5 z-10 md:mr-0 mr-24"></div>
 
                     {/* Tooltip Body */}
-                    <div className="relative bg-zinc-900 border border-white/10 rounded-xl shadow-2xl p-4 w-64 text-center cursor-default" onClick={(e) => e.stopPropagation()}>
+                    <div className="relative bg-zinc-900 border border-white/10 rounded-xl shadow-2xl p-4 w-60 max-w-[90vw] text-center cursor-default" onClick={(e) => e.stopPropagation()}>
                         <button
                             onClick={handleDismiss}
                             className="absolute top-2 right-2 text-zinc-500 hover:text-white transition-colors p-1"

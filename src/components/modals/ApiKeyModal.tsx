@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Key, X, ExternalLink, ShieldCheck, Save, Eye, EyeOff, Zap, Copy, Check } from 'lucide-react';
 import wechatQr from '../../assets/wechat.png';
+import { copyToClipboard } from '../../utils/clipboard';
 import { QuotaInfo } from '../../types';
 import { TRANSLATIONS } from '../../i18n/translations';
 
@@ -33,10 +34,12 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose, onSav
         }
     }, [isOpen]);
 
-    const copyWechat = () => {
-        navigator.clipboard.writeText('JaffryD');
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+    const copyWechat = async () => {
+        const success = await copyToClipboard('JaffryD');
+        if (success) {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -87,7 +90,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose, onSav
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose} />
 
-            <div className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden flex flex-col">
+            <div className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[85dvh]">
 
                 {/* Header */}
                 <div className="px-6 py-5 border-b border-zinc-100 dark:border-white/5 flex items-center justify-between bg-zinc-50/50 dark:bg-white/5">
@@ -109,7 +112,7 @@ export const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose, onSav
                     </button>
                 </div>
 
-                <div className="p-6 space-y-6">
+                <div className="p-6 space-y-6 overflow-y-auto">
 
                     {/* Unified Input */}
                     <form onSubmit={handleSubmit} className="space-y-4">

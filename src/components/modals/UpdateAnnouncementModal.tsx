@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { X, Trophy, Zap, Sparkles, MessageCircle } from 'lucide-react';
+import { X, Trophy, Zap, Sparkles, MessageCircle, Copy, Check } from 'lucide-react';
 import wechatQr from '../../assets/wechat.png';
+import { copyToClipboard } from '../../utils/clipboard';
 
 interface UpdateAnnouncementModalProps {
     lang: 'en' | 'cn';
@@ -8,6 +9,15 @@ interface UpdateAnnouncementModalProps {
 
 export const UpdateAnnouncementModal: React.FC<UpdateAnnouncementModalProps> = ({ lang }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = async () => {
+        const success = await copyToClipboard('JaffryD');
+        if (success) {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
+    };
 
     useEffect(() => {
         // Check if seen specific version
@@ -50,13 +60,13 @@ export const UpdateAnnouncementModal: React.FC<UpdateAnnouncementModalProps> = (
             />
 
             {/* Modal Content */}
-            <div className="relative w-full max-w-md bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-200 dark:border-white/10 overflow-hidden transform transition-all scale-100 animate-in zoom-in-95 duration-500">
+            <div className="relative w-full max-w-md bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-200 dark:border-white/10 overflow-hidden transform transition-all scale-100 animate-in zoom-in-95 duration-500 max-h-[85dvh] flex flex-col">
 
-                {/* Decorative Elements */}
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                {/* Decorative Elements (Hidden on mobile to save space/distraction) */}
+                <div className="hidden md:block absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="hidden md:block absolute -bottom-10 -left-10 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
-                <div className="relative p-6 pt-8">
+                <div className="relative p-5 pt-7 sm:p-6 sm:pt-8 overflow-y-auto">
                     <button
                         onClick={handleClose}
                         className="absolute top-4 right-4 p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
@@ -70,7 +80,7 @@ export const UpdateAnnouncementModal: React.FC<UpdateAnnouncementModalProps> = (
                             <Sparkles className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-heading font-bold text-zinc-900 dark:text-white">
+                            <h3 className="text-lg sm:text-xl font-heading font-bold text-zinc-900 dark:text-white">
                                 {t.title}
                             </h3>
                             <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">
@@ -123,9 +133,13 @@ export const UpdateAnnouncementModal: React.FC<UpdateAnnouncementModalProps> = (
                         {/* Contact Card */}
                         <div className="bg-indigo-50/50 dark:bg-indigo-500/10 rounded-xl p-3 border border-indigo-100 dark:border-indigo-500/20 flex flex-col items-center justify-center text-center">
                             <img src={wechatQr} alt="QR" className="w-24 h-24 object-contain mb-2 bg-white rounded-lg p-1" />
-                            <code className="text-[10px] px-1.5 py-0.5 bg-white/50 dark:bg-black/20 rounded text-indigo-800 dark:text-indigo-200 font-mono">
-                                {t.wechatId}
-                            </code>
+                            <button
+                                onClick={handleCopy}
+                                className="flex items-center gap-1 text-[10px] px-2 py-1 bg-white/50 dark:bg-black/20 rounded-md text-indigo-800 dark:text-indigo-200 font-mono hover:bg-white dark:hover:bg-black/40 transition-colors cursor-pointer active:scale-95"
+                            >
+                                <span>{t.wechatId.replace('WeChat: ', '')}</span>
+                                {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 opacity-50" />}
+                            </button>
                         </div>
                     </div>
 

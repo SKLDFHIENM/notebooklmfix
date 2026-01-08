@@ -92,7 +92,7 @@ export const CompletionBanner: React.FC<CompletionBannerProps> = ({
                                     }`}
                             >
                                 {isExportingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
-                                <span>PDF</span>
+                                <span className="hidden sm:inline">PDF</span>
                             </button>
 
                             {/* PPTX Button */}
@@ -105,7 +105,7 @@ export const CompletionBanner: React.FC<CompletionBannerProps> = ({
                                     }`}
                             >
                                 {isExportingPptx ? <Loader2 className="w-4 h-4 animate-spin" /> : <Presentation className="w-4 h-4" />}
-                                <span>PPTX</span>
+                                <span className="hidden sm:inline">PPTX</span>
                             </button>
                         </>
                     ) : (
@@ -115,7 +115,7 @@ export const CompletionBanner: React.FC<CompletionBannerProps> = ({
                             className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-all bg-white dark:bg-white/5 border-zinc-200 dark:border-white/10 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-white/10"
                         >
                             <Download className="w-4 h-4" />
-                            <span>Download ZIP</span>
+                            <span className="hidden sm:inline">Download ZIP</span>
                         </button>
                     )}
 

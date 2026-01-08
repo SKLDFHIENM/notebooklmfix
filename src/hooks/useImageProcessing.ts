@@ -48,10 +48,13 @@ export function useImageProcessing({
     const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
     const [insufficientCreditsInfo, setInsufficientCreditsInfo] = useState<{ current: number; cost: number } | null>(null);
 
-    // Auto-switch to 4K for Passcode Mode
+    // Auto-switch to 4K for Passcode Mode, BUT respect mobile constraints
     useEffect(() => {
         if (authMode === 'passcode') {
-            setResolution('4K');
+            const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+            if (!isMobile) {
+                setResolution('4K');
+            }
         }
     }, [authMode]);
 
