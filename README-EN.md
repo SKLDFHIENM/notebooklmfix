@@ -14,7 +14,7 @@
 
 | 🔴 Before | 🟢 After |
 | :---: | :---: |
-| ![Before](./src/assets/png4.png) | ![After](./src/assets/png5.png) |
+| ![Before](./src/assets/before.png) | ![After](./src/assets/after.png) |
 
 
 

@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeftRight, MoveHorizontal } from 'lucide-react';
+import React, { useState, useRef, useCallback } from 'react';
 
 interface ComparisonSliderProps {
     beforeImage: string;
@@ -17,9 +16,9 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
     aspectRatio = 'auto' // Default to auto
 }) => {
     const [sliderPosition, setSliderPosition] = useState(50);
-    const [isDragging, setIsDragging] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
+    // Interaction Handlers
     const handleMove = useCallback((clientX: number) => {
         if (!containerRef.current) return;
         const rect = containerRef.current.getBoundingClientRect();
@@ -28,69 +27,42 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
         setSliderPosition(position);
     }, []);
 
-    const onMouseDown = useCallback(() => setIsDragging(true), []);
-    const onTouchStart = useCallback(() => setIsDragging(true), []);
+    // Mouse: Hover to move (no click needed)
+    const onMouseMove = useCallback((e: React.MouseEvent) => {
+        handleMove(e.clientX);
+    }, [handleMove]);
 
-    useEffect(() => {
-        const onMouseUp = () => setIsDragging(false);
-        const onTouchEnd = () => setIsDragging(false);
-
-        const onMouseMove = (e: MouseEvent) => {
-            if (isDragging) handleMove(e.clientX);
-        };
-        const onTouchMove = (e: TouchEvent) => {
-            if (isDragging) handleMove(e.touches[0].clientX);
-        };
-
-        if (isDragging) {
-            window.addEventListener('mouseup', onMouseUp);
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('touchend', onTouchEnd);
-            window.addEventListener('touchmove', onTouchMove);
-        }
-
-        return () => {
-            window.removeEventListener('mouseup', onMouseUp);
-            window.removeEventListener('mousemove', onMouseMove);
-            window.removeEventListener('touchend', onTouchEnd);
-            window.removeEventListener('touchmove', onTouchMove);
-        };
-    }, [isDragging, handleMove]);
-
-    // Handle hover movement (optional, if desired behavior is hover instead of drag)
-    // For now, implementing drag for better mobile/UX reliability. 
-    // If hover is preferred, we can add onMouseMove to container.
+    // Touch: Drag to move
+    const onTouchMove = useCallback((e: React.TouchEvent) => {
+        handleMove(e.touches[0].clientX);
+    }, [handleMove]);
 
     return (
         <div
             ref={containerRef}
-            className={`relative w-full overflow-hidden rounded-2xl cursor-col-resize select-none border border-zinc-200 dark:border-white/10 shadow-2xl bg-zinc-900 group`}
+            className={`relative w-full overflow-hidden rounded-2xl cursor-crosshair select-none border border-zinc-200 dark:border-white/10 shadow-2xl bg-zinc-900 group touch-none`}
             style={{
-                aspectRatio: aspectRatio === 'video' ? '16/9' : aspectRatio === 'square' ? '1/1' : '4/3' // Default 4:3 for docs
+                aspectRatio: aspectRatio === 'video' ? '16/9' : aspectRatio === 'square' ? '1/1' : '4/3'
             }}
-            onMouseDown={(e) => {
-                setIsDragging(true);
-                handleMove(e.clientX);
-            }}
-            onTouchStart={(e) => {
-                setIsDragging(true);
-                handleMove(e.touches[0].clientX);
-            }}
+            onMouseMove={onMouseMove}
+            onTouchMove={onTouchMove}
+            onTouchStart={onTouchMove} // Jump to position on touch start
         >
-            {/* Background (After Image - Full Visibility) */}
+            {/* Background (After Image - Pro Restored) */}
             <div className="absolute inset-0 w-full h-full">
                 <img
                     src={afterImage}
                     alt="After"
                     className="w-full h-full object-cover pointer-events-none"
                     draggable={false}
+                    loading="lazy"
                 />
-                <div className="absolute top-4 rights-4 z-10 bg-indigo-500/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded right-4 shadow-lg">
+                <div className="absolute top-4 right-4 z-10 bg-indigo-500/90 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg tracking-wider opacity-80">
                     {afterLabel}
                 </div>
             </div>
 
-            {/* Foreground (Before Image - Clipped) */}
+            {/* Foreground (Before Image - Original) */}
             <div
                 className="absolute inset-0 w-full h-full will-change-[clip-path]"
                 style={{
@@ -100,30 +72,25 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
                 <img
                     src={beforeImage}
                     alt="Before"
-                    className="w-full h-full object-cover pointer-events-none"
+                    className="w-full h-full object-cover pointer-events-none brightness-[0.85] saturate-[0.8]"
                     draggable={false}
+                    loading="lazy"
                 />
-                <div className="absolute top-4 left-4 z-10 bg-black/60 backdrop-blur text-white/90 text-[10px] font-bold px-2 py-1 rounded border border-white/10">
+                <div className="absolute top-4 left-4 z-10 bg-black/60 backdrop-blur text-white/90 text-[10px] font-bold px-2 py-1 rounded border border-white/10 tracking-wider opacity-80">
                     {beforeLabel}
                 </div>
             </div>
 
-            {/* Slider Handle */}
+            {/* Slider Divider (The "Restrained" Line) */}
             <div
-                className="absolute top-0 bottom-0 w-1 bg-white/50 backdrop-blur-sm z-20 cursor-col-resize flex items-center justify-center transition-transform duration-75 ease-out"
+                className="absolute top-0 bottom-0 w-[2px] bg-white/90 z-20 pointer-events-none shadow-[0_0_12px_rgba(255,255,255,0.5)] backdrop-blur-[1px]"
                 style={{ left: `${sliderPosition}%` }}
             >
-                <div className="w-8 h-8 -ml-[14px] rounded-full bg-white shadow-xl flex items-center justify-center text-zinc-600 ring-4 ring-black/10">
-                    <ArrowLeftRight className="w-4 h-4" />
-                </div>
-            </div>
+                {/* Subtle Glow Effect along the line */}
+                <div className="absolute inset-y-0 -left-px w-[4px] bg-white/30 blur-[2px]"></div>
 
-            {/* Hover Hint Overlay (disappears on interaction) */}
-            <div className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-500 ${isDragging ? 'opacity-0' : 'opacity-100'}`}>
-                <div className="bg-black/40 backdrop-blur-md text-white/90 px-4 py-2 rounded-full text-xs font-medium flex items-center gap-2 animate-pulse border border-white/10">
-                    <MoveHorizontal className="w-4 h-4" />
-                    Drag or Click to Compare
-                </div>
+                {/* Optional: Very subtle middle indicator, hidden by default, shown on hover/move if needed. 
+                    Kept extremely minimal as requested "restrained". */}
             </div>
         </div>
     );

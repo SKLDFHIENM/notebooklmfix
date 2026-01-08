@@ -33,10 +33,8 @@ import { AmbientBackground } from './components/ui/AmbientBackground';
 
 // Types & Assets
 import { ProcessedPage } from './types';
-import png4 from './assets/png4.png';
-import png5 from './assets/png5.png';
-import png4Thumb from './assets/png4-thumb.png';
-import png5Thumb from './assets/png5-thumb.png';
+import beforeImg from './assets/before.png';
+import afterImg from './assets/after.png';
 import { autoPruneArchives } from './db/archive';
 
 // ================= Dictionary =================
@@ -393,14 +391,14 @@ const App: React.FC = () => {
             {/* Comparison Demo Section */}
             <div className="w-full max-w-4xl mx-auto mt-24 mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
               <ComparisonSlider
-                beforeImage={png4}
-                afterImage={png5}
+                beforeImage={beforeImg}
+                afterImage={afterImg}
                 beforeLabel={lang === 'en' ? 'Original' : '修复前'}
                 afterLabel={lang === 'en' ? 'Pro RESTORED' : 'PRO 修复后'}
                 aspectRatio="video" // Or "auto" depending on the image aspect ratio
               />
               <p className="text-center text-xs text-zinc-400 mt-4 animate-pulse">
-                {lang === 'en' ? 'Drag slider to compare details' : '拖动滑块查看修复细节'}
+                {lang === 'en' ? 'Hover image to compare details' : '鼠标移动查看修复细节'}
               </p>
             </div>
 
