@@ -49,7 +49,9 @@ export default async function handler(req, res) {
             quotaData.totalCredits = newTotal;
         }
 
+        // Use credits as single source of truth (remaining is legacy, may be out of sync)
         const credits = parseInt(quotaData.credits || quotaData.remaining);
+        const totalCredits = parseInt(quotaData.totalCredits || quotaData.total);
         const cost = (imageSize === '4K') ? 2 : 1;
 
         // --- VALIDATION ONLY MODE ---
@@ -57,8 +59,8 @@ export default async function handler(req, res) {
             return res.status(200).json({
                 valid: true,
                 quota: {
-                    total: parseInt(quotaData.totalCredits || quotaData.total),
-                    remaining: Math.max(0, credits)
+                    total: totalCredits,
+                    remaining: credits // Always use credits as source of truth
                 }
             });
         }
@@ -67,7 +69,7 @@ export default async function handler(req, res) {
             return res.status(403).json({
                 error: `积分不足 (Insufficient Credits). Needed: ${cost}, Have: ${credits}`,
                 quota: {
-                    total: parseInt(quotaData.totalCredits || quotaData.total),
+                    total: totalCredits,
                     remaining: credits
                 }
             });
@@ -113,8 +115,8 @@ export default async function handler(req, res) {
         let payload = {
             candidates,
             quota: {
-                total: parseInt(quotaData.totalCredits || quotaData.total),
-                remaining: credits // Send OLD quota first (pre-deduction)
+                total: totalCredits,
+                remaining: credits // Pre-deduction value from credits field
             }
         };
 
@@ -138,7 +140,7 @@ export default async function handler(req, res) {
                 return res.status(413).json({
                     error: "Image too large (Vercel Limit) and R2 not configured. Please use '2K'.",
                     quota: {
-                        total: parseInt(quotaData.totalCredits || quotaData.total),
+                        total: totalCredits,
                         remaining: credits
                     }
                 });
@@ -185,7 +187,7 @@ export default async function handler(req, res) {
                 payload = {
                     candidates: lightCandidates,
                     quota: {
-                        total: parseInt(quotaData.totalCredits || quotaData.total),
+                        total: totalCredits,
                         remaining: credits
                     }
                 };
@@ -194,22 +196,21 @@ export default async function handler(req, res) {
                 return res.status(500).json({
                     error: "Image generated but failed to deliver (Upload Error). Quota refunded.",
                     quota: {
-                        total: parseInt(quotaData.totalCredits || quotaData.total),
+                        total: totalCredits,
                         remaining: credits
                     }
                 });
             }
         }
 
-        // 7. Deduct Quota (Atomic HINCRBY)
-        // Deduct logic: -cost
+        // 7. Deduct Quota (Atomic HINCRBY on credits field)
         const newCredits = await kv.hincrby(key, 'credits', -cost);
-        // Also sync old legacy field just in case
+        // Sync legacy 'remaining' field for backward compatibility
         await kv.hset(key, { remaining: newCredits });
 
-        // Update payload with new quota
+        // Update payload with new quota (use newCredits as source of truth)
         payload.quota = {
-            total: parseInt(quotaData.totalCredits || quotaData.total),
+            total: totalCredits,
             remaining: Math.max(0, newCredits)
         };
 
