@@ -12,7 +12,13 @@
 
 ### 📊 Restoration Comparison
 
-| 🔴 Before | 🟢 After |
+#### Case 1: Complex Illustrations
+| 🔴 Original | 🟢 Restored |
+| :---: | :---: |
+| ![Before](./src/assets/before-v2.jpg) | ![After](./src/assets/after-v2.png) |
+
+#### Case 2: Slide Text
+| 🔴 Original | 🟢 Restored |
 | :---: | :---: |
 | ![Before](./src/assets/before.png) | ![After](./src/assets/after.png) |
 

@@ -79,16 +79,20 @@ export const ComparisonSlider: React.FC<ComparisonSliderProps> = ({
                 </div>
             </div>
 
-            {/* Slider Divider (The "Restrained" Line) */}
+            {/* Slider Divider */}
             <div
-                className="absolute top-0 bottom-0 w-[2px] bg-white/90 z-20 pointer-events-none shadow-[0_0_12px_rgba(255,255,255,0.5)] backdrop-blur-[1px]"
+                className="absolute top-0 bottom-0 w-1 bg-white z-20 pointer-events-none shadow-[0_0_15px_rgba(255,255,255,0.8)] backdrop-blur-[1px] flex items-center justify-center -ml-0.5"
                 style={{ left: `${sliderPosition}%` }}
             >
-                {/* Subtle Glow Effect along the line */}
-                <div className="absolute inset-y-0 -left-px w-[4px] bg-white/30 blur-[2px]"></div>
-
-                {/* Optional: Very subtle middle indicator, hidden by default, shown on hover/move if needed. 
-                    Kept extremely minimal as requested "restrained". */}
+                {/* Handle */}
+                <div className="w-8 h-8 rounded-full bg-white shadow-xl flex items-center justify-center text-zinc-900 transform scale-100 transition-transform group-hover:scale-110 group-active:scale-95">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m15 18-6-6 6-6" />
+                    </svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </div>
             </div>
         </div>
     );

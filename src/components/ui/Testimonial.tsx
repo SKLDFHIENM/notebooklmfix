@@ -18,6 +18,24 @@ interface Review {
 
 const REVIEWS: Review[] = [
     {
+        id: 11,
+        name: '鱼***',
+        role: '互联网',
+        avatar: '🐟',
+        content: '很清楚，哈哈，你的作品值得更高的流量啊。我把你名片推给我朋友哈。我帮你也在小红书上推广下，膜拜大神。帮打工人解决了大问题，哈哈',
+        contentEn: 'Crystal clear! Your work deserves way more traffic. Recommended to friends and promoting on Xiaohongshu. You solved a huge problem for us workers!',
+        platform: 'xiaohongshu'
+    },
+    {
+        id: 12,
+        name: '莫***',
+        role: '互联网',
+        avatar: '👍',
+        content: '不错不错，相当okay',
+        contentEn: 'Not bad at all, pretty okay.',
+        platform: 'wechat'
+    },
+    {
         id: 1,
         name: '羽',
         role: '',

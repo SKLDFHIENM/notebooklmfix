@@ -5,6 +5,7 @@ type TranslationKeys = {
     title: string;
     subtitle: string;
     description: string;
+    descriptionHint: string;
     selectKey: string;
     apiKeyActive: string;
     uploadTitle: string;
@@ -75,7 +76,8 @@ export const TRANSLATIONS: Record<Language, TranslationKeys> = {
         // App
         title: "NotebookLM Fixer",
         subtitle: "Slide & Infographic Restoration Expert",
-        description: "Specifically designed to fix blurry text and artifacts in NotebookLM generated PDFs and Infographics. Restore clarity and convert to PPTX.",
+        description: "AI-powered fix for blurry text & typos in slides and infographics. One-click upscaling to premium quality, with high-res PDF & PPTX export.",
+        descriptionHint: "(Image-only mode, preserving original layout)",
         selectKey: "Select Billing Project",
         apiKeyActive: "API Key Active",
         uploadTitle: "Upload PDF Document",
@@ -144,7 +146,8 @@ export const TRANSLATIONS: Record<Language, TranslationKeys> = {
         // App
         title: "NotebookLM Fixer",
         subtitle: "幻灯片 & 信息图修复专家",
-        description: "专为修复 NotebookLM 生成文档与信息图中的文字模糊与伪影问题而设计。一键还原清晰画质，支持导出 PDF 与 PPTX。",
+        description: "AI 智能修复幻灯片与长图的模糊文本及汉字错误，一键升级顶级画质。支持导出高分辨率 PDF 与 PPTX。",
+        descriptionHint: "（纯图模式，保持原版排版）",
         selectKey: "选择计费项目",
         apiKeyActive: "API 密钥已激活",
         uploadTitle: "上传文档或图片",

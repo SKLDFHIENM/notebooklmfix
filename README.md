@@ -14,6 +14,12 @@
 
 ### 📊 修复效果对比 (Before & After)
 
+#### 案例 1：复杂信息图 (Complex Illustrations)
+| 🔴 修复前 (Original) | 🟢 修复后 (Restored) |
+| :---: | :---: |
+| ![Before](./src/assets/before-v2.jpg) | ![After](./src/assets/after-v2.png) |
+
+#### 案例 2：幻灯片文字 (Slide Text)
 | 🔴 修复前 (Original) | 🟢 修复后 (Restored) |
 | :---: | :---: |
 | ![Before](./src/assets/before.png) | ![After](./src/assets/after.png) |

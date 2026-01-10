@@ -27,7 +27,6 @@ import { ApiKeyModal } from './components/modals/ApiKeyModal';
 import { ArchiveModal } from './components/modals/ArchiveModal';
 import { LegalModal } from './components/modals/LegalModal';
 import { InsufficientCreditsModal } from './components/modals/InsufficientCreditsModal';
-import { UpdateAnnouncementModal } from './components/modals/UpdateAnnouncementModal';
 import { ComparisonSlider } from './components/ui/ComparisonSlider';
 import { AmbientBackground } from './components/ui/AmbientBackground';
 import { MobileActionBar } from './components/layout/MobileActionBar';
@@ -36,6 +35,8 @@ import { MobileActionBar } from './components/layout/MobileActionBar';
 import { ProcessedPage } from './types';
 import beforeImg from './assets/before.png';
 import afterImg from './assets/after.png';
+import beforeImgV2 from './assets/before-v2.jpg';
+import afterImgV2 from './assets/after-v2.png';
 import { autoPruneArchives } from './db/archive';
 
 // ================= Dictionary =================
@@ -299,8 +300,6 @@ const App: React.FC = () => {
         disabled={isParsing}
       />
 
-      <UpdateAnnouncementModal lang={lang} />
-
       <AmbientBackground />
 
       {/* Background Decor */}
@@ -332,12 +331,15 @@ const App: React.FC = () => {
           <div className="flex flex-col items-center justify-center flex-1 animate-in fade-in zoom-in duration-500">
             <div className="text-center mb-10 max-w-2xl">
               <h2 className="text-4xl md:text-5xl font-heading mb-6 text-zinc-900 dark:text-white">
-                {lang === 'en' ? 'Reimagine your ' : '重塑您的 '}
+                {lang === 'en' ? 'Revamp your ' : '让 '}
                 <span className="italic">NotebookLM</span>
-                {lang === 'en' ? ' documents.' : ' 文档。'}
+                {lang === 'en' ? ' slides' : ' PPT 焕然一新'}
               </h2>
               <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-xl mx-auto">
                 {t.description}
+              </p>
+              <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-2">
+                {t.descriptionHint}
               </p>
             </div>
 
@@ -390,14 +392,35 @@ const App: React.FC = () => {
             </div>
 
             {/* Comparison Demo Section */}
-            <div className="w-full max-w-4xl mx-auto mt-24 mb-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-              <ComparisonSlider
-                beforeImage={beforeImg}
-                afterImage={afterImg}
-                beforeLabel={lang === 'en' ? 'Original' : '修复前'}
-                afterLabel={lang === 'en' ? 'Pro RESTORED' : 'PRO 修复后'}
-                aspectRatio="video" // Or "auto" depending on the image aspect ratio
-              />
+            <div className="w-full max-w-4xl mx-auto mt-24 mb-16 space-y-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
+
+              {/* Slider 1: New V2 (Story/Infographic) */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-center text-zinc-900 dark:text-white">
+                  {lang === 'en' ? 'Case 1: Complex Illustrations' : '案例 1：复杂信息图'}
+                </h3>
+                <ComparisonSlider
+                  beforeImage={beforeImgV2}
+                  afterImage={afterImgV2}
+                  beforeLabel={lang === 'en' ? 'Original' : '修复前'}
+                  afterLabel={lang === 'en' ? 'Pro RESTORED' : 'PRO 修复后'}
+                  aspectRatio="video"
+                />
+              </div>
+
+              {/* Slider 2: Old V1 (Slide Text) */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-center text-zinc-900 dark:text-white">
+                  {lang === 'en' ? 'Case 2: Slide Text' : '案例 2：幻灯片文字'}
+                </h3>
+                <ComparisonSlider
+                  beforeImage={beforeImg}
+                  afterImage={afterImg}
+                  beforeLabel={lang === 'en' ? 'Original' : '修复前'}
+                  afterLabel={lang === 'en' ? 'Pro RESTORED' : 'PRO 修复后'}
+                  aspectRatio="video"
+                />
+              </div>
               <p className="text-center text-xs text-zinc-400 mt-4 animate-pulse">
                 <span className="md:hidden">
                   {lang === 'en' ? 'Touch & Drag to compare' : '按住滑动查看细节'}
